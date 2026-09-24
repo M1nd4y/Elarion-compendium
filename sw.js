@@ -1,10 +1,9 @@
-const CACHE_NAME = 'elarion-v1';
+const CACHE_NAME = 'elarion-v2';
 const ARCHIVOS = [
   './',
   './index.html',
   './manifest.json',
   './styles/style.css',
-  './audio/musica.mp3',
   './icons/icon-192.png',
   './icons/icon-512.png'
 ];
