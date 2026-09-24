@@ -35,3 +35,8 @@ self.addEventListener('fetch', (e) => {
     caches.match(e.request).then((res) => res || fetch(e.request))
   );
 });
+// Manejador de fetch requerido por Chrome en Android para ofrecer "Instalar app"
+self.addEventListener('fetch', (event) => {
+  // Dejar que el navegador maneje la petición normalmente
+  // (El service worker ya sirve desde caché por la lógica de arriba)
+});
