@@ -1,4 +1,4 @@
-const CACHE_NAME = 'elarion-v2';
+const CACHE_NAME = 'elarion-v3';
 const ARCHIVOS = [
   './',
   './index.html',
