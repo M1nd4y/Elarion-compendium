@@ -1,0 +1,4343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elarion</title>
+
+<style>
+
+/* =========================
+   ESTILO GENERAL
+========================= */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #080d13;
+  color: #eee7d5;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.screen {
+  display: none;
+  min-height: 100vh;
+}
+
+.screen.active {
+  display: block;
+}
+
+
+/* =========================
+   MENÚ PRINCIPAL
+========================= */
+
+#homeScreen {
+  padding: 25px 18px 40px;
+}
+
+.logo-area {
+  text-align: center;
+  padding: 28px 0 25px;
+}
+
+.logo {
+  margin: 0;
+  color: #e5bd6b;
+  font-size: 38px;
+  letter-spacing: 5px;
+}
+
+.logo-subtitle {
+  margin-top: 8px;
+  color: #777f89;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+.main-search {
+  margin-bottom: 22px;
+}
+
+.search {
+  width: 100%;
+  padding: 14px 15px;
+  border: 1px solid #293b4b;
+  border-radius: 12px;
+  outline: none;
+  background: #0d1721;
+  color: #eee7d5;
+}
+
+.search:focus {
+  border-color: #80632e;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.menu-button {
+  min-height: 100px;
+  padding: 16px 10px;
+  border: 1px solid #293b4b;
+  border-radius: 15px;
+  background: linear-gradient(145deg, #14202c, #0b1118);
+  color: #ddd6c5;
+  transition: .2s;
+}
+
+.menu-button:active {
+  transform: scale(.97);
+}
+
+.menu-icon {
+  display: block;
+  margin-bottom: 9px;
+  font-size: 29px;
+}
+
+.menu-name {
+  font-size: 14px;
+  letter-spacing: .8px;
+}
+
+.message {
+  position: fixed;
+  left: 50%;
+  bottom: 25px;
+  z-index: 20;
+  transform: translate(-50%, 20px);
+  opacity: 0;
+  pointer-events: none;
+  padding: 12px 17px;
+  border: 1px solid #765b2a;
+  border-radius: 10px;
+  background: #111b25;
+  color: #e5bd6b;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  transition: .25s;
+}
+
+.message.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+
+/* =========================
+   CABECERAS DE PANTALLAS
+========================= */
+
+.screen-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 45px 1fr 45px;
+  align-items: center;
+  height: 64px;
+  padding: 0 8px;
+  border-bottom: 1px solid #293b4b;
+  background: rgba(8,13,19,.96);
+  backdrop-filter: blur(8px);
+}
+
+.screen-title {
+  margin: 0;
+  text-align: center;
+  color: #e5bd6b;
+  font-size: 17px;
+  letter-spacing: 2px;
+}
+
+.back-button,
+.add-button {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #d8a94e;
+  font-size: 29px;
+}
+
+.back-button:active,
+.add-button:active {
+  background: #172330;
+}
+
+
+/* =========================
+   BUSCADOR GENERAL
+========================= */
+
+.general-search-content {
+  padding: 15px 15px 35px;
+}
+
+.general-search-input {
+  margin-bottom: 14px;
+}
+
+.search-result-info {
+  margin: 0 2px 12px;
+  color: #697580;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.search-result-card {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 13px;
+  border: 1px solid #293b4b;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #13202c, #0c141d);
+  color: #eee7d5;
+  text-align: left;
+}
+
+.search-result-card:active {
+  transform: scale(.985);
+}
+
+.search-result-icon {
+  width: 53px;
+  min-width: 53px;
+  height: 53px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 13px;
+  border: 1px solid #765b2a;
+  border-radius: 12px;
+  background: #0b131c;
+  font-size: 27px;
+  overflow: hidden;
+}
+
+.search-result-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.search-result-name {
+  margin-bottom: 5px;
+  color: #e1b85d;
+  font-size: 16px;
+}
+
+.search-result-type {
+  margin-bottom: 4px;
+  color: #b1a994;
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+}
+
+.search-result-meta {
+  color: #7f8994;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.search-empty {
+  padding: 35px 15px;
+  text-align: center;
+  color: #697580;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+
+/* =========================
+   TARJETAS GENERICAS (PERSONAJES, LUGARES, FACCIONES)
+========================= */
+
+.character-search {
+  padding: 15px 15px 5px;
+}
+
+.character-list {
+  padding: 10px 15px 20px;
+}
+
+.character-card {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 13px;
+  border: 1px solid #293b4b;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #13202c, #0c141d);
+  color: #eee7d5;
+  text-align: left;
+}
+
+.character-card:active {
+  transform: scale(.985);
+}
+
+.character-icon {
+  width: 53px;
+  min-width: 53px;
+  height: 53px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 13px;
+  border: 1px solid #765b2a;
+  border-radius: 12px;
+  background: #0b131c;
+  font-size: 27px;
+  overflow: hidden;
+}
+
+.character-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.character-name {
+  margin-bottom: 5px;
+  color: #e1b85d;
+  font-size: 16px;
+}
+
+.character-meta {
+  color: #7f8994;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+}
+
+.new-character-area {
+  padding: 5px 15px 35px;
+}
+
+.new-character-button {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #765b2a;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #182636, #0e1721);
+  color: #e5bd6b;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+
+/* =========================
+   FICHAS DETALLADAS
+========================= */
+
+.character-sheet {
+  padding-bottom: 40px;
+}
+
+.sheet-hero {
+  padding: 25px 18px;
+  background: linear-gradient(180deg,#172638,#0b1119);
+  border-bottom: 1px solid #765b2a;
+}
+
+.sheet-identity {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+}
+
+.sheet-portrait {
+  width: 105px;
+  min-width: 105px;
+  height: 125px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #765b2a;
+  border-radius: 14px;
+  background: radial-gradient(circle,#26394d,#0c151f);
+  font-size: 52px;
+  box-shadow: 0 5px 18px rgba(0,0,0,.4);
+  overflow: hidden;
+}
+
+.sheet-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sheet-name {
+  margin: 0 0 7px;
+  color: #e5bd6b;
+  font-size: 26px;
+  line-height: 1.1;
+}
+
+.sheet-subtitle {
+  margin: 0 0 12px;
+  color: #b0aaa0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.sheet-small {
+  margin: 4px 0;
+  color: #8e98a3;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+}
+
+.sheet-content {
+  padding: 18px;
+}
+
+.sheet-block {
+  margin-bottom: 18px;
+  border: 1px solid #293b4b;
+  border-radius: 15px;
+  background: linear-gradient(135deg,rgba(19,30,42,.96),rgba(8,14,21,.96));
+  overflow: hidden;
+}
+
+.sheet-block-title {
+  margin: 0;
+  padding: 14px 16px;
+  color: #e1b85d;
+  font-size: 17px;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #293b4b;
+  background: rgba(8,14,21,.45);
+}
+
+.sheet-block-body {
+  padding: 15px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 9px;
+}
+
+.info-box {
+  padding: 11px;
+  border: 1px solid #293746;
+  border-radius: 10px;
+  background: #0d1721;
+}
+
+.info-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #777f89;
+  font-family: Arial,sans-serif;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .7px;
+}
+
+.info-value {
+  color: #eee7d5;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 8px;
+}
+
+.stat-box {
+  padding: 11px 5px;
+  text-align: center;
+  border: 1px solid #293b4b;
+  border-radius: 11px;
+  background: #0d1721;
+}
+
+.stat-name {
+  color: #8e98a3;
+  font-family: Arial,sans-serif;
+  font-size: 9px;
+  line-height: 1.1;
+}
+
+.stat-score {
+  display: block;
+  margin-top: 6px;
+  color: #eee7d5;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.stat-mod {
+  display: block;
+  margin-top: 2px;
+  color: #d8a94e;
+  font-family: Arial,sans-serif;
+  font-size: 13px;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.sheet-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial,sans-serif;
+  font-size: 12px;
+}
+
+.sheet-table th {
+  padding: 9px 7px;
+  color: #777f89;
+  font-size: 10px;
+  text-transform: uppercase;
+  text-align: left;
+  border-bottom: 1px solid #344555;
+}
+
+.sheet-table td {
+  padding: 9px 7px;
+  color: #ddd6c5;
+  border-bottom: 1px solid #202e3b;
+}
+
+.sheet-table tr:last-child td {
+  border-bottom: none;
+}
+
+.proficient {
+  color: #d8a94e !important;
+  font-weight: bold;
+}
+
+.sheet-text {
+  color: #c6c1b7;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.sheet-text p {
+  margin: 0 0 12px;
+}
+
+.sheet-text p:last-child {
+  margin-bottom: 0;
+}
+
+.sheet-text h3 {
+  margin: 18px 0 7px;
+  color: #e1b85d;
+  font-size: 15px;
+}
+
+.sheet-text h3:first-child {
+  margin-top: 0;
+}
+
+.sheet-text ul {
+  margin: 7px 0 12px;
+  padding-left: 20px;
+}
+
+.sheet-text li {
+  margin-bottom: 6px;
+}
+
+.sheet-columns {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 12px;
+}
+
+
+/* =========================
+   ELIMINAR
+========================= */
+
+.delete-character-button {
+  width: 100%;
+  margin-top: 2px;
+  padding: 15px;
+  border: 1px solid #633b3b;
+  border-radius: 12px;
+  background: linear-gradient(135deg,#24171b,#110e11);
+  color: #c98282;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.delete-character-button:active {
+  transform: scale(.985);
+}
+
+
+/* =========================
+   FORMULARIOS
+========================= */
+
+.create-character-content {
+  padding: 16px 15px 40px;
+}
+
+.form-block {
+  margin-bottom: 16px;
+  padding: 15px;
+  border: 1px solid #293b4b;
+  border-radius: 15px;
+  background: linear-gradient(135deg,#131e2a,#0b121a);
+}
+
+.form-block-title {
+  margin: 0 0 15px;
+  color: #e1b85d;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 10px;
+}
+
+.form-group {
+  margin-bottom: 13px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #8e98a3;
+  font-family: Arial,sans-serif;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  border: 1px solid #293b4b;
+  border-radius: 9px;
+  outline: none;
+  background: #0b141d;
+  color: #eee7d5;
+}
+
+.form-input,
+.form-select {
+  height: 43px;
+  padding: 9px 10px;
+}
+
+.form-textarea {
+  min-height: 105px;
+  padding: 10px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: #80632e;
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: #56616c;
+}
+
+.stats-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 9px;
+}
+
+.stat-input-group {
+  text-align: center;
+}
+
+.stat-input-group .form-label {
+  font-size: 9px;
+}
+
+.stat-number {
+  width: 100%;
+  height: 48px;
+  border: 1px solid #293b4b;
+  border-radius: 10px;
+  outline: none;
+  background: #0b141d;
+  color: #e5bd6b;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.stat-number:focus {
+  border-color: #80632e;
+}
+
+.form-help {
+  margin: 12px 0 0;
+  color: #697580;
+  font-family: Arial,sans-serif;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.save-character-button {
+  width: 100%;
+  margin-top: 3px;
+  padding: 16px;
+  border: 1px solid #765b2a;
+  border-radius: 12px;
+  background: linear-gradient(135deg,#2a3a4b,#121d28);
+  color: #e5bd6b;
+  font-size: 15px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.save-character-button:active {
+  transform: scale(.985);
+}
+
+.required {
+  color: #b87333;
+}
+
+
+/* =========================
+   RELACIONES
+========================= */
+
+.relation-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 14px;
+  border: 1px solid #293b4b;
+  border-radius: 10px;
+  background: #0d141c;
+}
+
+.relation-main {
+  flex: 1;
+}
+
+.relation-character {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.relation-portrait {
+  width: 42px;
+  min-width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #293b4b;
+  border-radius: 50%;
+  background: #080d13;
+  font-size: 22px;
+  overflow: hidden;
+}
+
+.relation-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.relation-name {
+  margin-bottom: 5px;
+  color: #e1b85d;
+  font-size: 16px;
+}
+
+.relation-type {
+  color: #e5bd6b;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+}
+
+.relation-description {
+  margin-top: 10px;
+  color: #b9c0c7;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.relation-delete-button {
+  width: auto;
+  margin-top: 0;
+  padding: 7px 10px;
+  border: 1px solid #633b3b;
+  border-radius: 8px;
+  background: #24171b;
+  color: #c98282;
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  letter-spacing: .5px;
+}
+
+.relation-delete-button:active {
+  transform: scale(.97);
+}
+
+.relation-empty {
+  margin-bottom: 14px;
+  color: #697580;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.relationship-form-content {
+  padding: 16px 15px 40px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:380px) {
+
+  .sheet-portrait {
+    width: 85px;
+    min-width: 85px;
+    height: 105px;
+  }
+
+  .sheet-name {
+    font-size: 21px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sheet-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .relation-card {
+    flex-direction: column;
+  }
+
+  .relation-delete-button {
+    width: 100%;
+  }
+
+}
+
+</style>
+  
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d0a1f">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+  
+</head>
+
+
+<body>
+
+<div id="splash">
+  <h1>ELARION</h1>
+  <p>Compendium</p>
+</div>
+
+<style>
+  #splash {
+    position: fixed;
+    inset: 0;
+    background: #0d0a1f;
+    color: #d4af37;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    font-family: serif;
+    transition: opacity 0.8s ease;
+  }
+  #splash h1 {
+    font-size: 3rem;
+    letter-spacing: 8px;
+    margin: 0;
+    text-shadow: 0 0 20px #d4af37;
+  }
+  #splash p {
+    letter-spacing: 4px;
+    opacity: 0.8;
+  }
+  #splash.oculto {
+    opacity: 0;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('splash').classList.add('oculto');
+    }, 2500);
+  });
+</script>
+
+<!-- ==================================================
+     MENÚ PRINCIPAL
+================================================== -->
+
+<section id="homeScreen" class="screen active">
+
+  <div class="logo-area">
+    <h1 class="logo">✦ ELARION ✦</h1>
+    <div class="logo-subtitle">COMPENDIO DEL CONTINENTE</div>
+  </div>
+
+  <div class="main-search">
+    <input
+      id="mainSearch"
+      class="search"
+      type="search"
+      placeholder="🔍  Buscar en Elarion..."
+      autocomplete="off"
+    >
+  </div>
+
+  <div id="menuGrid" class="menu-grid">
+
+    <button class="menu-button" data-name="personajes">
+      <span class="menu-icon">👤</span>
+      <span class="menu-name">PERSONAJES</span>
+    </button>
+
+    <button class="menu-button" data-name="lugares">
+      <span class="menu-icon">🏰</span>
+      <span class="menu-name">LUGARES</span>
+    </button>
+
+    <button class="menu-button" data-name="facciones">
+      <span class="menu-icon">⚔️</span>
+      <span class="menu-name">FACCIONES</span>
+    </button>
+
+    <button class="menu-button" data-name="lore">
+      <span class="menu-icon">📜</span>
+      <span class="menu-name">LORE</span>
+    </button>
+
+    <button class="menu-button" data-name="eventos">
+      <span class="menu-icon">📅</span>
+      <span class="menu-name">EVENTOS</span>
+    </button>
+
+    <button class="menu-button" data-name="objetos">
+      <span class="menu-icon">🗡️</span>
+      <span class="menu-name">OBJETOS</span>
+    </button>
+
+    <button class="menu-button" data-name="religiones">
+      <span class="menu-icon">✦</span>
+      <span class="menu-name">RELIGIONES</span>
+    </button>
+
+    <button class="menu-button" data-name="mapas">
+      <span class="menu-icon">🗺️</span>
+      <span class="menu-name">MAPAS</span>
+    </button>
+
+    <button class="menu-button" data-name="campañas">
+      <span class="menu-icon">📖</span>
+      <span class="menu-name">CAMPAÑAS</span>
+    </button>
+
+    <button class="menu-button" data-name="notas">
+      <span class="menu-icon">📓</span>
+      <span class="menu-name">NOTAS</span>
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- ==================================================
+     BUSCADOR GENERAL
+================================================== -->
+
+<section id="generalSearchScreen" class="screen">
+
+  <header class="screen-header">
+
+    <button
+      class="back-button"
+      id="backFromGeneralSearch"
+      aria-label="Volver"
+    >‹</button>
+
+    <h2 class="screen-title">
+      BUSCAR EN ELARION
+    </h2>
+
+    <div></div>
+
+  </header>
+
+
+  <main class="general-search-content">
+
+    <div class="general-search-input">
+
+      <input
+        id="generalSearchInput"
+        class="search"
+        type="search"
+        placeholder="🔍  Buscar en Elarion..."
+        autocomplete="off"
+      >
+
+    </div>
+
+
+    <div
+      id="searchResultInfo"
+      class="search-result-info"
+    ></div>
+
+
+    <div
+      id="generalSearchResults"
+    ></div>
+
+  </main>
+
+</section>
+
+
+<!-- ==================================================
+     PERSONAJES
+================================================== -->
+
+<section id="charactersScreen" class="screen">
+
+  <header class="screen-header">
+
+    <button
+      class="back-button"
+      id="backFromCharacters"
+      aria-label="Volver"
+    >‹</button>
+
+    <h2 class="screen-title">PERSONAJES</h2>
+
+    <button
+      class="add-button"
+      id="addCharacterButton"
+      aria-label="Nuevo personaje"
+    >＋</button>
+
+  </header>
+
+
+  <div class="character-search">
+
+    <input
+      id="characterSearch"
+      class="search"
+      type="search"
+      placeholder="🔍  Buscar personaje..."
+      autocomplete="off"
+    >
+
+  </div>
+
+
+  <main id="characterList" class="character-list"></main>
+
+
+  <section class="new-character-area">
+
+    <button
+      id="newCharacterButton"
+      class="new-character-button"
+    >
+      ＋ &nbsp; NUEVO PERSONAJE
+    </button>
+
+  </section>
+
+</section>
+
+
+<!-- ==================================================
+     FICHA DE PERSONAJE
+================================================== -->
+
+<section id="characterDetailScreen" class="screen">
+
+  <header class="screen-header">
+
+    <button
+      class="back-button"
+      id="backFromCharacter"
+      aria-label="Volver"
+    >‹</button>
+
+    <h2
+      class="screen-title"
+      id="characterDetailTitle"
+    >
+      PERSONAJE
+    </h2>
+
+    <button
+      class="add-button"
+      id="editCharacterButton"
+      aria-label="Editar"
+    >✎</button>
+
+  </header>
+
+
+  <main id="characterSheet" class="character-sheet"></main>
+
+</section>
+
+
+<!-- ==================================================
+     CREAR / EDITAR PERSONAJE
+================================================== -->
+
+<section id="createCharacterScreen" class="screen">
+
+  <header class="screen-header">
+
+    <button
+      class="back-button"
+      id="backFromCreateCharacter"
+      aria-label="Volver"
+    >‹</button>
+
+    <h2
+      class="screen-title"
+      id="createCharacterTitle"
+    >
+      NUEVO PERSONAJE
+    </h2>
+
+    <div></div>
+
+  </header>
+
+
+  <main class="create-character-content">
+
+    <form id="createCharacterForm">
+
+      <!-- IDENTIDAD -->
+
+      <section class="form-block">
+
+        <h3 class="form-block-title">IDENTIDAD Y RETRATO</h3>
+
+        <div class="form-group">
+
+          <label class="form-label" for="characterName">
+            Nombre <span class="required">*</span>
+          </label>
+
+          <input
+            id="characterName"
+            class="form-input"
+            type="text"
+            placeholder="Ej. Aric Valen"
+            required
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label class="form-label" for="characterImageFile">
+            Imagen / Foto (Desde tu dispositivo)
+          </label>
+
+          <input
+            id="characterImageFile"
+            class="form-input"
+            type="file"
+            accept="image/*"
+            style="padding: 7px 10px;"
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label class="form-label" for="characterImageUrl">
+            O enlace URL de imagen
+          </label>
+
+          <input
+            id="characterImageUrl"
+            class="form-input"
+            type="url"
+            placeholder="https://ejemplo.com/imagen.jpg"
+          >
+
+        </div>
+
+
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label class="form-label" for="characterType">
+              Tipo
+            </label>
+
+            <select id="characterType" class="form-select">
+
+              <option value="PJ">PJ</option>
+              <option value="NPC">NPC</option>
+              <option value="Enemigo">Enemigo</option>
+              <option value="Histórico">Histórico</option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label class="form-label" for="characterRace">
+              Raza
+            </label>
+
+            <input
+              id="characterRace"
+              class="form-input"
+              type="text"
+              placeholder="Ej. Humano"
+            >
+
+          </div>
+
+        </div>
+
+
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label class="form-label" for="characterClass">
+              Clase
+            </label>
+
+            <input
+              id="characterClass"
+              class="form-input"
+              type="text"
+              placeholder="Ej. Guerrero"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label class="form-label" for="characterLevel">
+              Nivel
+            </label>
+
+            <input
+              id="characterLevel"
+              class="form-input"
+              type="number"
+              min="1"
+              max="20"
+              placeholder="1"
+            >
+
+          </div>
+
+        </div>
+
+
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label class="form-label" for="characterAlignment">
+              Alineamiento
+            </label>
+
+            <select
+              id="characterAlignment"
+              class="form-select"
+            >
+
+              <option value="">No especificado</option>
+              <option>Legal Bueno</option>
+              <option>Neutral Bueno</option>
+              <option>Caótico Bueno</option>
+              <option>Legal Neutral</option>
+              <option>Neutral</option>
+              <option>Caótico Neutral</option>
+              <option>Legal Malvado</option>
+              <option>Neutral Malvado</option>
+              <option>Caótico Malvado</option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label class="form-label" for="characterBackground">
+              Trasfondo
+            </label>
+
+            <input
+              id="characterBackground"
+              class="form-input"
+              type="text"
+              placeholder="Ej. Soldado"
+            >
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- INFORMACIÓN BÁSICA -->
+
+      <section class="form-block">
+
+        <h3 class="form-block-title">INFORMACIÓN BÁSICA</h3>
+
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label class="form-label" for="characterAge">
+              Edad
+            </label>
+
+            <input
+              id="characterAge"
+              class="form-input"
+              type="text"
+              placeholder="Ej. 37 años"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label class="form-label" for="characterHeight">
+              Altura
+            </label>
+
+            <input
+              id="characterHeight"
+              class="form-input"
+              type="text"
+              placeholder="Ej. 1,78 m"
+            >
+
+          </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label class="form-label" for="characterBirthPlace">
+            Lugar de nacimiento
+          </label>
+
+          <input
+            id="characterBirthPlace"
+            class="form-input"
+            type="text"
+            placeholder="Ej. Delaran City"
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label class="form-label" for="characterResidence">
+            Residencia
+          </label>
+
+          <input
+            id="characterResidence"
+            class="form-input"
+            type="text"
+            placeholder="Ej. Reino de Delaran"
+          >
+
+        </div>
+
+
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label class="form-label" for="characterReligion">
+              Religión
+            </label>
+
+            <input
+              id="characterReligion"
+              class="form-input"
+              type="text"
+              placeholder="Ej. Delarianismo"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label class="form-label" for="characterDevotion">
+              Devoción
+            </label>
+
+            <select
+              id="characterDevotion"
+              class="form-select"
+            >
+
+              <option value="">No especificada</option>
+              <option>Muy baja</option>
+              <option>Baja</option>
+              <option>Moderada</option>
+              <option>Alta</option>
+              <option>Muy alta</option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ATRIBUTOS -->
+
+      <section class="form-block">
+
+        <h3 class="form-block-title">ATRIBUTOS</h3>
+
+
+        <div class="stats-form-grid">
+
+          <div class="stat-input-group">
+
+            <label
+              class="form-label"
+              for="statSTR"
+            >
+              Fuerza
+            </label>
+
+            <input
+              id="statSTR"
+              class="stat-number"
+              type="number"
+              min="1"
+              max="30"
+              value="10"
+            >
+
+          </div>
+
+
+          <div class="stat-input-group">
+
+            <label
+              class="form-label"
+              for="statDEX"
+            >
+              Destreza
+            </label>
+
+            <input
+              id="statDEX"
+              class="stat-number"
+              type="number"
+              min="1"
+              max="30"
+              value="10"
+            >
+
+          </div>
+
+
+          <div class="stat-input-group">
+
+            <label
+              class="form-label"
+              for="statCON"
+            >
+              Constitución
+            </label>
+
+            <input
+              id="statCON"
+              class="stat-number"
+              type="number"
+              min="1"
+              max="30"
+              value="10"
+            >
+
+          </div>
+
+
+          <div class="stat-input-group">
+
+            <label
+              class="form-label"
+              for="statINT"
+            >
+              Inteligencia
+            </label>
+
+            <input
+              id="statINT"
+              class="stat-number"
+              type="number"
+              min="1"
+              max="30"
+              value="10"
+            >
+
+          </div>
+
+
+          <div class="stat-input-group">
+
+            <label
+              class="form-label"
+              for="statWIS"
+            >
+              Sabiduría
+            </label>
+
+            <input
+              id="statWIS"
+              class="stat-number"
+              type="number"
+              min="1"
+              max="30"
+              value="10"
+            >
+
+          </div>
+
+
+          <div class="stat-input-group">
+
+            <label
+              class="form-label"
+              for="statCHA"
+            >
+              Carisma
+            </label>
+
+            <input
+              id="statCHA"
+              class="stat-number"
+              type="number"
+              min="1"
+              max="30"
+              value="10"
+            >
+
+          </div>
+
+        </div>
+
+
+        <p class="form-help">
+          Los modificadores se calcularán automáticamente a partir de los atributos.
+        </p>
+
+      </section>
+
+
+      <!-- DESCRIPCIÓN -->
+
+      <section class="form-block">
+
+        <h3 class="form-block-title">DESCRIPCIÓN</h3>
+
+
+        <div class="form-group">
+
+          <label class="form-label" for="characterAppearance">
+            Apariencia
+          </label>
+
+          <textarea
+            id="characterAppearance"
+            class="form-textarea"
+            placeholder="Descripción física, vestimenta, cicatrices, rasgos distintivos..."
+          ></textarea>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label class="form-label" for="characterPersonality">
+            Personalidad
+          </label>
+
+          <textarea
+            id="characterPersonality"
+            class="form-textarea"
+            placeholder="Carácter, forma de actuar, ideales, defectos..."
+          ></textarea>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label class="form-label" for="characterHistory">
+            Historia
+          </label>
+
+          <textarea
+            id="characterHistory"
+            class="form-textarea"
+            placeholder="Historia del personaje..."
+          ></textarea>
+
+        </div>
+
+      </section>
+
+
+      <button
+        type="submit"
+        id="saveCharacterButton"
+        class="save-character-button"
+      >
+        💾 &nbsp; GUARDAR PERSONAJE
+      </button>
+
+
+    </form>
+
+  </main>
+
+</section>
+
+
+<!-- ==================================================
+     LUGARES
+================================================== -->
+
+<section id="placesScreen" class="screen">
+
+  <header class="screen-header">
+
+    <button
+      class="back-button"
+      id="backFromPlaces"
+      aria-label="Volver"
+    >‹</button>
+
+    <h2 class="screen-title">LUGARES</h2>
+
+    <button
+      class="add-button"
+      id="addPlaceButton"
+      aria-label="Nuevo lugar"
+    >＋</button>
+
+  </header>
+
+
+  <div class="character-search">
+
+    <input
+      id="placeSearch"
+      class="search"
+      type="search"
+      placeholder="🔍  Buscar lugar..."
+      autocomplete="off"
+    >
+
+  </div>
+
+
+  <main id="placeList" class="character-list"></main>
+
+
+  <section class="new-character-area">
+
+    <button
+      id="newPlaceButton"
+      class="new-character-button"
+    >
+      ＋ &nbsp; NUEVO LUGAR
+    </button>
+
+  </section>
+
+</section>
+
+
+<!-- ==================================================
+     FICHA DE LUGAR
+================================================== -->
+
+<section id="placeDetailScreen" class="screen">
+
+  <header class="screen-header">
+
+    <button
+      class="back-button"
+      id="backFromPlace"
+      aria-label="Volver"
+    >‹</button>
+
+    <h2
+      class="screen-title"
+      id="placeDetailTitle"
+    >
+      LUGAR
+    </h2>
+
+    <button
+      class="add-button"
+      id="editPlaceButton"
+      aria-label="Editar"
+    >✎</button>
+
+  </header>
+
+
+  <main id="placeSheet" class="character-sheet"></main>
+
+</section>
+
+
+<!-- ==================================================
+     CREAR / EDITAR LUGAR
+================================================== -->
+
+<section id="createPlaceScreen" class="screen">
+
+  <header class="screen-header">
+
+    <button
+      class="back-button"
+      id="backFromCreatePlace"
+      aria-label="Volver"
+    >‹</button>
+
+    <h2
+      class="screen-title"
+      id="createPlaceTitle"
+    >
+      NUEVO LUGAR
+    </h2>
+
+    <div></div>
+
+  </header>
+
+
+  <main class="create-character-content">
+
+    <form id="createPlaceForm">
+
+      <section class="form-block">
+
+        <h3 class="form-block-title">INFORMACIÓN GENERAL</h3>
+
+        <div class="form-group">
+
+          <label class="form-label" for="placeName">
+            Nombre del lugar <span class="required">*</span>
+          </label>
+
+          <input
+            id="placeName"
+            class="form-input"
+            type="text"
+            placeholder="Ej. Delaran City o El Ciervo Errante"
+            required
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label class="form-label" for="placeImageFile">
+            Imagen / Mapa (Desde tu dispositivo)
+          </label>
+
+          <input
+            id="placeImageFile"
+            class="form-input"
+            type="file"
+            accept="image/*"
+            style="padding: 7px 10px;"
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label class="form-label" for="placeImageUrl">
+            O enlace URL de imagen
+          </label>
+
+          <input
+            id="placeImageUrl"
+            class="form-input"
+            type="url"
+            placeholder="https://ejemplo.com/lugar.jpg"
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label class="form-label" for="placeCategory">
+            Categoría principal
+          </label>
+
+          <select id="placeCategory" class="form-select">
+            <option value="Civil">Asentamiento Civil (Capital, Ciudad, Pueblo, Aldea)</option>
+            <option value="Militar">Instalación Militar (Castillo, Fortaleza, Fuerte)</option>
+            <option value="Interes">Lugar de Interés (Taberna, Templo, Mazmorra, etc.)</option>
+          </select>
+
+        </div>
+
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label class="form-label" for="placeType">
+              Tipo específico
+            </label>
+
+            <select id="placeType" class="form-select"></select>
+
+          </div>
+
+          <div class="form-group">
+
+            <label class="form-label" for="placeLocation">
+              Ubicación
+            </label>
+
+            <input
+              id="placeLocation"
+              class="form-input"
+              type="text"
+              placeholder="Ej. Distrito Norte / Afueras"
+            >
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section class="form-block">
+
+        <h3 class="form-block-title">TERRITORIO Y CONTROL</h3>
+
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label class="form-label" for="placeRegion">
+              Región / Bioma
+            </label>
+
+            <input
+              id="placeRegion"
+              class="form-input"
+              type="text"
+              placeholder="Ej. Llanura, Bosque, Montaña"
+            >
+
+          </div>
+
+          <div class="form-group">
+
+            <label class="form-label" for="placeDomain">
+              Dominio
+            </label>
+
+            <input
+              id="placeDomain"
+              class="form-input"
+              type="text"
+              placeholder="Ej. Reino de Delaran"
+            >
+
+          </div>
+
+        </div>
+
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label class="form-label" for="placeGoverning">
+              Gobierno / Gobernante
+            </label>
+
+            <input
+              id="placeGoverning"
+              class="form-input"
+              type="text"
+              placeholder="Ej. Monarquía / Rey Roderick"
+            >
+
+          </div>
+
+          <div class="form-group">
+
+            <label class="form-label" for="placeOwner">
+              Propiedad / Dueño
+            </label>
+
+            <input
+              id="placeOwner"
+              class="form-input"
+              type="text"
+              placeholder="Ej. Marta la Posadera"
+            >
+
+          </div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label class="form-label" for="placeFunction">
+            Actividad principal / Función
+          </label>
+
+          <input
+            id="placeFunction"
+            class="form-input"
+            type="text"
+            placeholder="Ej. Comercio, Guarnición, Posada y Taberna"
+          >
+
+        </div>
+
+      </section>
+
+
+      <section class="form-block">
+
+        <h3 class="form-block-title">DESCRIPCIÓN E HISTORIA</h3>
+
+        <div class="form-group">
+
+          <label class="form-label" for="placeDescription">
+            Descripción general
+          </label>
+
+          <textarea
+            id="placeDescription"
+            class="form-textarea"
+            placeholder="Características del lugar, ambiente, estructura..."
+          ></textarea>
+
+        </div>
+
+        <div class="form-group">
+
+          <label class="form-label" for="placeHistory">
+            Historia / Lore
+          </label>
+
+          <textarea
+            id="placeHistory"
+            class="form-textarea"
+            placeholder="Acontecimientos importantes, datos de interés..."
+          ></textarea>
+
+        </div>
+
+      </section>
+
+
+      <button
+        type="submit"
+        id="savePlaceButton"
+        class="save-character-button"
+      >
+        💾 &nbsp; GUARDAR LUGAR
+      </button>
+
+    </form>
+
+  </main>
+
+</section>
+
+
+<!-- ==================================================
+     FACCIONES
+================================================== -->
+
+<section id="factionsScreen" class="screen">
+
+  <header class="screen-header">
+
+    <button
+      class="back-button"
+      id="backFromFactions"
+      aria-label="Volver"
+    >‹</button>
+
+    <h2 class="screen-title">FACCIONES</h2>
+
+    <button
+      class="add-button"
+      id="addFactionButton"
+      aria-label="Nueva facción"
+    >＋</button>
+
+  </header>
+
+  <div class="character-search">
+
+    <input
+      id="factionSearch"
+      class="search"
+      type="search"
+      placeholder="🔍  Buscar facción..."
+      autocomplete="off"
+    >
+
+  </div>
+
+  <main id="factionList" class="character-list"></main>
+
+  <section class="new-character-area">
+
+    <button
+      id="newFactionButton"
+      class="new-character-button"
+    >
+      ＋ &nbsp; NUEVA FACCIÓN
+    </button>
+
+  </section>
+
+</section>
+
+
+<!-- ==================================================
+     FICHA DE FACCIÓN
+================================================== -->
+
+<section id="factionDetailScreen" class="screen">
+
+  <header class="screen-header">
+
+    <button
+      class="back-button"
+      id="backFromFaction"
+      aria-label="Volver"
+    >‹</button>
+
+    <h2
+      class="screen-title"
+      id="factionDetailTitle"
+    >
+      FACCIÓN
+    </h2>
+
+    <button
+      class="add-button"
+      id="editFactionButton"
+      aria-label="Editar"
+    >✎</button>
+
+  </header>
+
+  <main id="factionSheet" class="character-sheet"></main>
+
+</section>
+
+
+<!-- ==================================================
+     CREAR / EDITAR FACCIÓN
+================================================== -->
+
+<section id="createFactionScreen" class="screen">
+
+  <header class="screen-header">
+
+    <button
+      class="back-button"
+      id="backFromCreateFaction"
+      aria-label="Volver"
+    >‹</button>
+
+    <h2
+      class="screen-title"
+      id="createFactionTitle"
+    >
+      NUEVA FACCIÓN
+    </h2>
+
+    <div></div>
+
+  </header>
+
+  <main class="create-character-content">
+
+    <form id="createFactionForm">
+
+      <section class="form-block">
+
+        <h3 class="form-block-title">INFORMACIÓN GENERAL</h3>
+
+        <div class="form-group">
+
+          <label class="form-label" for="factionName">
+            Nombre de la facción <span class="required">*</span>
+          </label>
+
+          <input
+            id="factionName"
+            class="form-input"
+            type="text"
+            placeholder="Ej. Las Espadas Bastardas"
+            required
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label class="form-label" for="factionImageFile">
+            Símbolo / Estandarte (Desde tu dispositivo)
+          </label>
+
+          <input
+            id="factionImageFile"
+            class="form-input"
+            type="file"
+            accept="image/*"
+            style="padding: 7px 10px;"
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label class="form-label" for="factionImageUrl">
+            O enlace URL de imagen
+          </label>
+
+          <input
+            id="factionImageUrl"
+            class="form-input"
+            type="url"
+            placeholder="https://ejemplo.com/emblema.jpg"
+          >
+
+        </div>
+
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label class="form-label" for="factionType">
+              Tipo de facción
+            </label>
+
+            <select id="factionType" class="form-select">
+              <option value="Banda Mercenaria">Banda Mercenaria</option>
+              <option value="Reino / Imperio">Reino / Imperio</option>
+              <option value="Orden Militar / Caballería">Orden Militar / Caballería</option>
+              <option value="Círculo Mágico / Arcano">Círculo Mágico / Arcano</option>
+              <option value="Culto / Secta">Culto / Secta</option>
+              <option value="Gremio">Gremio</option>
+              <option value="Compañía">Compañía</option>
+              <option value="Clan / Familia Noble">Clan / Familia Noble</option>
+              <option value="Otro">Otro</option>
+            </select>
+
+          </div>
+
+          <div class="form-group">
+
+            <label class="form-label" for="factionAlignment">
+              Alineamiento
+            </label>
+
+            <select id="factionAlignment" class="form-select">
+              <option value="">No especificado</option>
+              <option>Legal Bueno</option>
+              <option>Neutral Bueno</option>
+              <option>Caótico Bueno</option>
+              <option>Legal Neutral</option>
+              <option>Neutral</option>
+              <option>Caótico Neutral</option>
+              <option>Legal Malvado</option>
+              <option>Neutral Malvado</option>
+              <option>Caótico Malvado</option>
+            </select>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section class="form-block">
+
+        <h3 class="form-block-title">ESTRUCTURA Y ALCANCE</h3>
+
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label class="form-label" for="factionLeader">
+              Líder / Gobernante
+            </label>
+
+            <input
+              id="factionLeader"
+              class="form-input"
+              type="text"
+              placeholder="Ej. Comandante Varis"
+            >
+
+          </div>
+
+          <div class="form-group">
+
+            <label class="form-label" for="factionHeadquarters">
+              Sede Principal
+            </label>
+
+            <input
+              id="factionHeadquarters"
+              class="form-input"
+              type="text"
+              placeholder="Ej. Delaran City"
+            >
+
+          </div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label class="form-label" for="factionInfluence">
+            Alcance / Influencia
+          </label>
+
+          <select id="factionInfluence" class="form-select">
+            <option value="Local">Local (Ciudad o zona pequeña)</option>
+            <option value="Regional">Regional (Un reino o provincia)</option>
+            <option value="Continental">Continental (Todo Elarion)</option>
+            <option value="Oculta / Secreta">Oculta / Secreta</option>
+          </select>
+
+        </div>
+
+        <div class="form-group">
+
+          <label class="form-label" for="factionAllies">
+            Aliados y Enemigos
+          </label>
+
+          <input
+            id="factionAllies"
+            class="form-input"
+            type="text"
+            placeholder="Ej. Aliados: Corona de Delaran · Enemigos: Los Cuervos"
+          >
+
+        </div>
+
+      </section>
+
+
+      <section class="form-block">
+
+        <h3 class="form-block-title">LORE Y OBJETIVOS</h3>
+
+        <div class="form-group">
+
+          <label class="form-label" for="factionGoals">
+            Ideales y Objetivos
+          </label>
+
+          <textarea
+            id="factionGoals"
+            class="form-textarea"
+            placeholder="Propósito de la facción, código de honor, ambiciones..."
+          ></textarea>
+
+        </div>
+
+        <div class="form-group">
+
+          <label class="form-label" for="factionDescription">
+            Descripción y Historia
+          </label>
+
+          <textarea
+            id="factionDescription"
+            class="form-textarea"
+            placeholder="Historia de su fundación, estructura de rangos, reputación..."
+          ></textarea>
+
+        </div>
+
+      </section>
+
+      <button
+        type="submit"
+        id="saveFactionButton"
+        class="save-character-button"
+      >
+        💾 &nbsp; GUARDAR FACCIÓN
+      </button>
+
+    </form>
+
+  </main>
+
+</section>
+
+
+<!-- ==================================================
+     NUEVA RELACIÓN
+================================================== -->
+
+<section id="relationshipScreen" class="screen">
+
+  <header class="screen-header">
+
+    <button
+      class="back-button"
+      id="backFromRelationship"
+      aria-label="Volver"
+    >‹</button>
+
+    <h2 class="screen-title">
+      NUEVA RELACIÓN
+    </h2>
+
+    <div></div>
+
+  </header>
+
+
+  <main class="relationship-form-content">
+
+    <form id="relationshipForm">
+
+      <section class="form-block">
+
+        <h3 class="form-block-title">
+          PERSONAJE
+        </h3>
+
+        <div id="relationshipCurrentCharacter"></div>
+
+      </section>
+
+
+      <section class="form-block">
+
+        <h3 class="form-block-title">
+          RELACIÓN
+        </h3>
+
+        <div class="form-group">
+
+          <label
+            class="form-label"
+            for="relationshipCharacterSelect"
+          >
+            Personaje relacionado
+          </label>
+
+          <select
+            id="relationshipCharacterSelect"
+            class="form-select"
+            required
+          >
+            <option value="">
+              Seleccionar personaje...
+            </option>
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label
+            class="form-label"
+            for="relationshipType"
+          >
+            Tipo de relación
+          </label>
+
+          <select
+            id="relationshipType"
+            class="form-select"
+            required
+          >
+
+            <option value="">
+              Seleccionar tipo...
+            </option>
+
+            <option>Amistad</option>
+            <option>Enemistad</option>
+            <option>Familia</option>
+            <option>Pareja</option>
+            <option>Antigua pareja</option>
+            <option>Compañero</option>
+            <option>Rival</option>
+            <option>Mentor</option>
+            <option>Alumno</option>
+            <option>Conocido</option>
+            <option>Otro</option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label
+            class="form-label"
+            for="relationshipDescription"
+          >
+            Descripción
+          </label>
+
+          <textarea
+            id="relationshipDescription"
+            class="form-textarea"
+            placeholder="Describe la relación..."
+          ></textarea>
+
+        </div>
+
+      </section>
+
+
+      <button
+        type="submit"
+        class="save-character-button"
+      >
+        💾 &nbsp; GUARDAR RELACIÓN
+      </button>
+
+    </form>
+
+  </main>
+
+</section>
+
+
+<div id="message" class="message"></div>
+
+
+<script>
+
+/* ==================================================
+   DATOS PERSONAJES
+================================================== */
+
+const characters = [
+
+  {
+    id: 1,
+    name: "Roderick Redwood",
+    type: "PJ",
+    race: "Humano Variante",
+    className: "Guerrero",
+    level: 1,
+    alignment: "Caótico Bueno",
+    background: "Mercenario (Soldado · D&D 5e 2014)",
+    portrait: "⚔️",
+    image: null,
+
+    basic: {
+      age: "37 años",
+      height: "1,78 m",
+      birthPlace: "Delaran City",
+      residence: "Reino de Delaran",
+      religion: "Delarianismo",
+      devotion: "Baja"
+    },
+
+    stats: [
+      ["FUERZA","16","+3"],
+      ["DESTREZA","14","+2"],
+      ["CONSTITUCIÓN","14","+2"],
+      ["INTELIGENCIA","8","−1"],
+      ["SABIDURÍA","12","+1"],
+      ["CARISMA","10","+0"]
+    ],
+
+    combat: [
+      ["CA con escudo","18"],
+      ["CA espada + daga","17"],
+      ["CA sin escudo","16"],
+      ["PG máximos","12"],
+      ["PG actuales","12"],
+      ["Iniciativa","+2"],
+      ["Velocidad","30 pies"],
+      ["Dado de golpe","1d10"],
+      ["Bonificador de competencia","+2"]
+    ],
+
+    saves: [
+      ["Fuerza","+5",true],
+      ["Destreza","+2",false],
+      ["Constitución","+4",true],
+      ["Inteligencia","−1",false],
+      ["Sabiduría","+1",false],
+      ["Carisma","+0",false]
+    ],
+
+    skills: [
+      ["Atletismo","+5",true],
+      ["Acrobacias","+2",false],
+      ["Arcanos","−1",false],
+      ["Engaño","+0",false],
+      ["Historia","−1",false],
+      ["Interpretación","+0",false],
+      ["Intimidación","+2",true],
+      ["Investigación","−1",false],
+      ["Juego de Manos","+2",false],
+      ["Medicina","+1",false],
+      ["Naturaleza","−1",false],
+      ["Percepción","+3",true],
+      ["Perspicacia","+3",true],
+      ["Persuasión","+0",false],
+      ["Religión","−1",false],
+      ["Sigilo","+2",false],
+      ["Supervivencia","+3",true],
+      ["Trato con Animales","+1",false]
+    ],
+
+    attacks: [
+      ["Espada larga","+5","1d8+3","Versátil"],
+      ["Daga","+5","1d4+3","Ligera, sutil, arrojadiza"],
+      ["Hacha de mano","+5","1d6+3","Ligera, arrojadiza"]
+    ],
+
+    classFeatures: [
+      {
+        title: "Segundo Aliento",
+        text: "Como acción adicional, Roderick puede recuperar 1d10 + 1 puntos de golpe. Debe terminar un descanso corto o largo antes de volver a utilizar este rasgo."
+      },
+      {
+        title: "Estilo de Combate: Lucha con dos armas",
+        text: "Cuando Roderick lucha utilizando dos armas, puede añadir su modificador de característica al daño de su segundo ataque."
+      }
+    ],
+
+    feat: {
+      title: "Combatiente con dos armas",
+      text: "Roderick puede utilizar armas cuerpo a cuerpo de una mano aunque no posean la propiedad ligera. Además, obtiene +1 a la Clase de Armadura mientras empuña un arma cuerpo a cuerpo distinta en cada mano. Esta dote permite su configuración característica: espada larga + daga."
+    },
+
+    racial: {
+      title: "Humano Variante",
+      traits: [
+        "+1 Fuerza",
+        "+1 Constitución",
+        "Una competencia adicional",
+        "Una dote adicional",
+        "Un idioma adicional"
+      ],
+      languages: [
+        "<strong>Común:</strong> variante regional Delariana.",
+        "<strong>Élfico:</strong> aprendido de Débora, antigua pareja de Roderick y hechicera semielfa."
+      ]
+    },
+
+    proficiencies: {
+      armor: [
+        "Todas las armaduras",
+        "Escudos"
+      ],
+      weapons: [
+        "Armas simples",
+        "Armas marciales"
+      ],
+      tools: [
+        "Juego de dados"
+      ],
+      vehicles: [
+        "Vehículos terrestres"
+      ],
+      mount: [
+        "Roderick sabe montar a caballo."
+      ]
+    },
+
+    backgroundDetails: {
+      title: "Mercenario (Soldado · D&D 5e 2014)",
+      description: "Roderick pasó varios años sirviendo en la milicia y como guardia de frontera antes de convertirse en mercenario.",
+      competencies: [
+        "Atletismo",
+        "Intimidación"
+      ]
+    },
+
+    personality: {
+      trait: "Práctico, desconfiado e ingenioso. Mantiene la calma ante situaciones difíciles y suele pensar antes de actuar. Posee un humor seco y responde con sarcasmo ante órdenes que considera absurdas.",
+      ideal: "<strong>Independencia.</strong> No quiere que su destino dependa de la voluntad de otra persona. Quiere vivir de acuerdo con sus propias decisiones y conseguir por sí mismo todo aquello que posee.",
+      bond: "<strong>Su código personal.</strong> Puede trabajar fuera de la ley y aceptar encargos moralmente cuestionables, pero jamás traicionará a alguien que haya confiado en él ni abandonará deliberadamente a un compañero.",
+      flaw: "<strong>Desconfianza.</strong> Le cuesta aceptar la autoridad y puede rechazar ayuda legítima por miedo a quedar en deuda con alguien.",
+      habits: "Después de una misión suele celebrar con sus compañeros en una taberna y, posteriormente, frecuentar algún lupanar o burdel como forma de relajarse."
+    },
+
+    history: [
+      {
+        title: "Infancia",
+        text: "La historia de infancia de Roderick se encuentra registrada en el compendio de Elarion."
+      },
+      {
+        title: "Juventud",
+        text: "Durante su juventud comenzó a desarrollar las habilidades que posteriormente utilizaría como soldado y mercenario."
+      },
+      {
+        title: "Los Hijos de Nadie",
+        text: "Roderick tuvo contacto con el grupo conocido como Los Hijos de Nadie."
+      },
+      {
+        title: "Las Espadas Bastardas",
+        text: "Posteriormente formó parte de Las Espadas Bastardas."
+      },
+      {
+        title: "Los Cuervos de Azdoth",
+        text: "Su trayectoria como mercenario también estuvo relacionada con Los Cuervos de Azdoth."
+      },
+      {
+        title: "Motivo para aventurarse",
+        text: "Roderick busca conservar su independencia y decidir por sí mismo qué hacer con su vida."
+      }
+    ],
+
+    appearance: {
+      physical: "Roderick es un hombre humano de 37 años y 1,78 m de altura. Tiene tez morena clara, cabello negro, corto y ligeramente despeinado, y ojos marrón oscuro.",
+      distinctive: "Posee varias cicatrices producto de sus años como mercenario. La mayoría permanecen ocultas bajo la ropa. La más visible se encuentra en la mejilla derecha y fue causada por un corte de daga durante una disputa con uno de los integrantes de Los Hijos de Nadie."
+    },
+
+    religion: {
+      deity: "Delarianismo",
+      relation: "Poco devoto.",
+      description: "Roderick respeta las tradiciones del Delarianismo, pero la religión no ocupa un lugar central en su vida."
+    }
+  },
+
+  {
+    id: 2,
+    name: "Marta",
+    type: "NPC",
+    race: null,
+    className: "Posadera",
+    level: null,
+    portrait: "🍺",
+    image: null
+  },
+
+  {
+    id: 3,
+    name: "Elian",
+    type: "NPC",
+    race: null,
+    className: null,
+    level: null,
+    portrait: "👤",
+    image: null
+  }
+
+];
+
+
+/* ==================================================
+   DATOS LUGARES
+================================================== */
+
+const places = [
+  {
+    id: 101,
+    name: "Delaran City",
+    category: "Civil",
+    type: "Capital",
+    location: "Zona central del Reino",
+    region: "Llanura",
+    domain: "Reino de Delaran",
+    governing: "Consejo Real",
+    owner: "",
+    placeFunction: "Comercio, política y cultura",
+    image: null,
+    portrait: "🏰",
+    description: "Capital principal del Reino de Delaran. Gran centro comercial, político y cultural del continente.",
+    history: "Fundada tras las Antiguas Guerras, ha sido el bastión de la humanidad en la región durante siglos."
+  },
+  {
+    id: 102,
+    name: "El Ciervo Errante",
+    category: "Interes",
+    type: "Taberna / Posada",
+    location: "Delaran City (Distrito Comercial)",
+    region: "Urbana",
+    domain: "Reino de Delaran",
+    governing: "",
+    owner: "Marta",
+    placeFunction: "Hospedaje, comida y centro de rumores",
+    image: null,
+    portrait: "🍺",
+    description: "Una taberna cálida y concurrida por mercenarios, viajeros y locales.",
+    history: "Lugar habitual de descanso para Roderick tras cumplir encargos."
+  }
+];
+
+
+/* ==================================================
+   DATOS FACCIONES
+================================================== */
+
+const factions = [
+  {
+    id: 201,
+    name: "Las Espadas Bastardas",
+    type: "Banda Mercenaria",
+    alignment: "Caótico Neutral",
+    leader: "Capitán Varis",
+    headquarters: "Delaran City",
+    influence: "Regional",
+    allies: "Guardia Urbana de Delaran",
+    goals: "Aceptar contratos de protección y escolta, garantizando la supervivencia del grupo sin atarse a ningún rey.",
+    image: null,
+    portrait: "⚔️",
+    description: "Compañía mercenaria reputada en la región. Roderick formó parte de sus filas durante varios años."
+  }
+];
+
+
+/* ==================================================
+   GUARDADO DE DATOS (PERSONAJES, LUGARES Y FACCIONES)
+================================================== */
+
+const CHARACTERS_STORAGE_KEY = "elarion_characters";
+const PLACES_STORAGE_KEY = "elarion_places";
+const FACTIONS_STORAGE_KEY = "elarion_factions";
+
+function saveCharacters() {
+  try {
+    localStorage.setItem(CHARACTERS_STORAGE_KEY, JSON.stringify(characters));
+    return true;
+  } catch (error) {
+    console.error("Error al guardar personajes:", error);
+    return false;
+  }
+}
+
+function loadCharacters() {
+  try {
+    const saved = localStorage.getItem(CHARACTERS_STORAGE_KEY);
+    if (!saved) {
+      saveCharacters();
+      return;
+    }
+    const parsed = JSON.parse(saved);
+    const validData = Array.isArray(parsed) && parsed.every(character => character && typeof character === "object" && "id" in character && "name" in character);
+    if (!validData) {
+      saveCharacters();
+      return;
+    }
+    characters.splice(0, characters.length, ...parsed);
+  } catch (error) {
+    console.error("Error al cargar personajes:", error);
+    saveCharacters();
+  }
+}
+
+function savePlaces() {
+  try {
+    localStorage.setItem(PLACES_STORAGE_KEY, JSON.stringify(places));
+    return true;
+  } catch (error) {
+    console.error("Error al guardar lugares:", error);
+    return false;
+  }
+}
+
+function loadPlaces() {
+  try {
+    const saved = localStorage.getItem(PLACES_STORAGE_KEY);
+    if (!saved) {
+      savePlaces();
+      return;
+    }
+    const parsed = JSON.parse(saved);
+    if (Array.isArray(parsed)) {
+      places.splice(0, places.length, ...parsed);
+    }
+  } catch (error) {
+    console.error("Error al cargar lugares:", error);
+    savePlaces();
+  }
+}
+
+function saveFactions() {
+  try {
+    localStorage.setItem(FACTIONS_STORAGE_KEY, JSON.stringify(factions));
+    return true;
+  } catch (error) {
+    console.error("Error al guardar facciones:", error);
+    return false;
+  }
+}
+
+function loadFactions() {
+  try {
+    const saved = localStorage.getItem(FACTIONS_STORAGE_KEY);
+    if (!saved) {
+      saveFactions();
+      return;
+    }
+    const parsed = JSON.parse(saved);
+    if (Array.isArray(parsed)) {
+      factions.splice(0, factions.length, ...parsed);
+    }
+  } catch (error) {
+    console.error("Error al cargar facciones:", error);
+    saveFactions();
+  }
+}
+
+
+/* ==================================================
+   RELACIONES
+================================================== */
+
+const RELATIONSHIPS_STORAGE_KEY = "elarion_relationships";
+let relationships = [];
+let relationshipFromCharacterId = null;
+
+function saveRelationships() {
+  try {
+    localStorage.setItem(RELATIONSHIPS_STORAGE_KEY, JSON.stringify(relationships));
+    return true;
+  } catch (error) {
+    console.error("Error al guardar relaciones:", error);
+    return false;
+  }
+}
+
+function loadRelationships() {
+  try {
+    const saved = localStorage.getItem(RELATIONSHIPS_STORAGE_KEY);
+    if (!saved) {
+      relationships = [];
+      return;
+    }
+    const parsed = JSON.parse(saved);
+    if (!Array.isArray(parsed)) {
+      relationships = [];
+      return;
+    }
+    relationships = parsed.filter(relation =>
+      relation && typeof relation === "object" && "id" in relation && "characterAId" in relation && "characterBId" in relation
+    );
+  } catch (error) {
+    console.error("Error al cargar relaciones:", error);
+    relationships = [];
+  }
+}
+
+
+/* ==================================================
+   ESTADOS DE EDICIÓN Y REFERENCIAS
+================================================== */
+
+let editingCharacterId = null;
+let currentCharacterId = null;
+let editingOriginalHistoryText = "";
+let currentUploadedImageBase64 = "";
+
+let editingPlaceId = null;
+let currentPlaceId = null;
+let currentUploadedPlaceImageBase64 = "";
+
+let editingFactionId = null;
+let currentFactionId = null;
+let currentUploadedFactionImageBase64 = "";
+
+const homeScreen = document.getElementById("homeScreen");
+const generalSearchScreen = document.getElementById("generalSearchScreen");
+
+const charactersScreen = document.getElementById("charactersScreen");
+const characterDetailScreen = document.getElementById("characterDetailScreen");
+const createCharacterScreen = document.getElementById("createCharacterScreen");
+
+const placesScreen = document.getElementById("placesScreen");
+const placeDetailScreen = document.getElementById("placeDetailScreen");
+const createPlaceScreen = document.getElementById("createPlaceScreen");
+
+const factionsScreen = document.getElementById("factionsScreen");
+const factionDetailScreen = document.getElementById("factionDetailScreen");
+const createFactionScreen = document.getElementById("createFactionScreen");
+
+const characterList = document.getElementById("characterList");
+const characterSearch = document.getElementById("characterSearch");
+const characterSheet = document.getElementById("characterSheet");
+const characterDetailTitle = document.getElementById("characterDetailTitle");
+const createCharacterTitle = document.getElementById("createCharacterTitle");
+const createCharacterForm = document.getElementById("createCharacterForm");
+const saveCharacterButton = document.getElementById("saveCharacterButton");
+
+const placeList = document.getElementById("placeList");
+const placeSearch = document.getElementById("placeSearch");
+const placeSheet = document.getElementById("placeSheet");
+const placeDetailTitle = document.getElementById("placeDetailTitle");
+const createPlaceTitle = document.getElementById("createPlaceTitle");
+const createPlaceForm = document.getElementById("createPlaceForm");
+const savePlaceButton = document.getElementById("savePlaceButton");
+
+const factionList = document.getElementById("factionList");
+const factionSearch = document.getElementById("factionSearch");
+const factionSheet = document.getElementById("factionSheet");
+const factionDetailTitle = document.getElementById("factionDetailTitle");
+const createFactionTitle = document.getElementById("createFactionTitle");
+const createFactionForm = document.getElementById("createFactionForm");
+const saveFactionButton = document.getElementById("saveFactionButton");
+
+const message = document.getElementById("message");
+const mainSearch = document.getElementById("mainSearch");
+const generalSearchInput = document.getElementById("generalSearchInput");
+const generalSearchResults = document.getElementById("generalSearchResults");
+const searchResultInfo = document.getElementById("searchResultInfo");
+
+const relationshipScreen = document.getElementById("relationshipScreen");
+const relationshipForm = document.getElementById("relationshipForm");
+const relationshipCurrentCharacter = document.getElementById("relationshipCurrentCharacter");
+const relationshipCharacterSelect = document.getElementById("relationshipCharacterSelect");
+const relationshipType = document.getElementById("relationshipType");
+const relationshipDescription = document.getElementById("relationshipDescription");
+
+
+/* ==================================================
+   MENSAJES Y PANTALLAS
+================================================== */
+
+function showMessage(text) {
+  message.textContent = text;
+  message.classList.add("show");
+  setTimeout(() => {
+    message.classList.remove("show");
+  }, 1800);
+}
+
+function showScreen(screen) {
+  homeScreen.classList.remove("active");
+  generalSearchScreen.classList.remove("active");
+  charactersScreen.classList.remove("active");
+  characterDetailScreen.classList.remove("active");
+  createCharacterScreen.classList.remove("active");
+  placesScreen.classList.remove("active");
+  placeDetailScreen.classList.remove("active");
+  createPlaceScreen.classList.remove("active");
+  factionsScreen.classList.remove("active");
+  factionDetailScreen.classList.remove("active");
+  createFactionScreen.classList.remove("active");
+  relationshipScreen.classList.remove("active");
+
+  screen.classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+
+/* ==================================================
+   PERSONAJES - RENDERING Y ACCIONES
+================================================== */
+
+function openCharacters() {
+  showScreen(charactersScreen);
+  characterSearch.value = "";
+  renderCharacters();
+}
+
+function renderCharacters(filter = "") {
+  characterList.innerHTML = "";
+  const searchText = filter.toLowerCase().trim();
+  const filteredCharacters = characters.filter(character =>
+    character.name.toLowerCase().includes(searchText)
+  );
+
+  if (filteredCharacters.length === 0) {
+    characterList.innerHTML = `
+      <div style="padding:35px 15px;text-align:center;color:#697580;font-family:Arial,sans-serif;font-size:13px;">
+        No se encontraron personajes.
+      </div>`;
+    return;
+  }
+
+  filteredCharacters.forEach(character => {
+    let meta = character.type;
+    if (character.className) meta += " · " + character.className;
+    if (character.level !== null && character.level !== undefined) meta += " · Nv." + character.level;
+
+    const card = document.createElement("button");
+    card.className = "character-card";
+
+    const portraitHtml = character.image
+      ? `<img src="${character.image}" alt="${escapeHtml(character.name)}">`
+      : (character.portrait || "👤");
+
+    card.innerHTML = `
+      <div class="character-icon">${portraitHtml}</div>
+      <div>
+        <div class="character-name">${escapeHtml(character.name)}</div>
+        <div class="character-meta">${escapeHtml(meta)}</div>
+      </div>
+    `;
+
+    card.addEventListener("click", () => openCharacter(character.id));
+    characterList.appendChild(card);
+  });
+}
+
+
+/* ==================================================
+   LUGARES - RENDERING, PLANTILLA Y ACCIONES
+================================================== */
+
+const placeTypeOptions = {
+  Civil: ["Aldea", "Pueblo", "Ciudad", "Capital"],
+  Militar: ["Fuerte", "Fortaleza", "Castillo"],
+  Interes: ["Taberna / Posada", "Templo / Santuario", "Mercado / Gremio", "Mazmorra / Ruina", "Edificio / Casa", "Otro"]
+};
+
+function updatePlaceTypeSelect(category, selectedType = "") {
+  const placeTypeSelect = document.getElementById("placeType");
+  placeTypeSelect.innerHTML = "";
+
+  const options = placeTypeOptions[category] || placeTypeOptions["Civil"];
+  options.forEach(opt => {
+    const option = document.createElement("option");
+    option.value = opt;
+    option.textContent = opt;
+    if (opt === selectedType) option.selected = true;
+    placeTypeSelect.appendChild(option);
+  });
+}
+
+document.getElementById("placeCategory").addEventListener("change", function(e) {
+  updatePlaceTypeSelect(e.target.value);
+});
+
+function renderPlaces(filter = "") {
+  placeList.innerHTML = "";
+  const searchText = filter.toLowerCase().trim();
+  const filteredPlaces = places.filter(place =>
+    place.name.toLowerCase().includes(searchText)
+  );
+
+  if (filteredPlaces.length === 0) {
+    placeList.innerHTML = `
+      <div style="padding:35px 15px;text-align:center;color:#697580;font-family:Arial,sans-serif;font-size:13px;">
+        No se encontraron lugares.
+      </div>`;
+    return;
+  }
+
+  filteredPlaces.forEach(place => {
+    let meta = place.type || "Lugar";
+    if (place.domain) meta += " · " + place.domain;
+    else if (place.region) meta += " · " + place.region;
+
+    const card = document.createElement("button");
+    card.className = "character-card";
+
+    const portraitHtml = place.image
+      ? `<img src="${place.image}" alt="${escapeHtml(place.name)}">`
+      : (place.portrait || "🏰");
+
+    card.innerHTML = `
+      <div class="character-icon">${portraitHtml}</div>
+      <div>
+        <div class="character-name">${escapeHtml(place.name)}</div>
+        <div class="character-meta">${escapeHtml(meta)}</div>
+      </div>
+    `;
+
+    card.addEventListener("click", () => openPlace(place.id));
+    placeList.appendChild(card);
+  });
+}
+
+function openPlace(id) {
+  const place = places.find(p => p.id === id);
+  if (!place) return;
+
+  currentPlaceId = id;
+  placeDetailTitle.textContent = place.name;
+
+  const portraitHtml = place.image
+    ? `<img src="${place.image}" alt="${escapeHtml(place.name)}">`
+    : (place.portrait || "🏰");
+
+  placeSheet.innerHTML = `
+    <div class="sheet-hero">
+      <div class="sheet-identity">
+        <div class="sheet-portrait">${portraitHtml}</div>
+        <div>
+          <h1 class="sheet-name">${escapeHtml(place.name)}</h1>
+          <p class="sheet-subtitle">${escapeHtml(place.type || "Lugar")}</p>
+          <p class="sheet-small">${escapeHtml(place.location || place.region || "Ubicación no especificada")}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet-content">
+      <section class="sheet-block">
+        <h2 class="sheet-block-title">INFORMACIÓN GENERAL</h2>
+        <div class="sheet-block-body">
+          <div class="info-grid">
+            ${infoBox("Categoría", place.category || "No especificada")}
+            ${infoBox("Tipo", place.type)}
+            ${infoBox("Ubicación", place.location)}
+            ${infoBox("Región / Bioma", place.region)}
+            ${infoBox("Dominio", place.domain)}
+            ${infoBox("Gobierno", place.governing)}
+            ${infoBox("Propiedad / Dueño", place.owner)}
+            ${infoBox("Función / Actividad", place.placeFunction)}
+          </div>
+        </div>
+      </section>
+
+      <section class="sheet-block">
+        <h2 class="sheet-block-title">DESCRIPCIÓN</h2>
+        <div class="sheet-block-body sheet-text">
+          <p>${escapeHtml(place.description || "Sin descripción.")}</p>
+        </div>
+      </section>
+
+      <section class="sheet-block">
+        <h2 class="sheet-block-title">HISTORIA Y LORE</h2>
+        <div class="sheet-block-body sheet-text">
+          <p>${escapeHtml(place.history || "Sin historia registrada.")}</p>
+        </div>
+      </section>
+
+      <button id="deletePlaceButton" class="delete-character-button" type="button">
+        🗑️ &nbsp; ELIMINAR LUGAR
+      </button>
+    </div>
+  `;
+
+  document.getElementById("deletePlaceButton").addEventListener("click", () => deletePlace(place.id));
+  showScreen(placeDetailScreen);
+}
+
+document.getElementById("placeImageFile").addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    currentUploadedPlaceImageBase64 = event.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+function openCreatePlace() {
+  editingPlaceId = null;
+  currentUploadedPlaceImageBase64 = "";
+  createPlaceForm.reset();
+  updatePlaceTypeSelect("Civil");
+  createPlaceTitle.textContent = "NUEVO LUGAR";
+  savePlaceButton.innerHTML = "💾 &nbsp; GUARDAR LUGAR";
+  showScreen(createPlaceScreen);
+}
+
+function openEditPlace(id) {
+  const place = places.find(p => p.id === id);
+  if (!place) return;
+
+  editingPlaceId = place.id;
+  createPlaceForm.reset();
+
+  const category = place.category || "Civil";
+  document.getElementById("placeCategory").value = category;
+  updatePlaceTypeSelect(category, place.type || "");
+
+  document.getElementById("placeName").value = place.name || "";
+  document.getElementById("placeLocation").value = place.location || "";
+  document.getElementById("placeRegion").value = place.region || "";
+  document.getElementById("placeDomain").value = place.domain || "";
+  document.getElementById("placeGoverning").value = place.governing || "";
+  document.getElementById("placeOwner").value = place.owner || "";
+  document.getElementById("placeFunction").value = place.placeFunction || "";
+  document.getElementById("placeDescription").value = place.description || "";
+  document.getElementById("placeHistory").value = place.history || "";
+
+  document.getElementById("placeImageUrl").value = (place.image && !place.image.startsWith("data:")) ? place.image : "";
+  currentUploadedPlaceImageBase64 = (place.image && place.image.startsWith("data:")) ? place.image : "";
+
+  createPlaceTitle.textContent = "EDITAR LUGAR";
+  savePlaceButton.innerHTML = "✎ &nbsp; GUARDAR CAMBIOS";
+  showScreen(createPlaceScreen);
+}
+
+createPlaceForm.addEventListener("submit", function(e) {
+  e.preventDefault();
+  const name = document.getElementById("placeName").value.trim();
+  if (!name) return;
+
+  const imageUrl = document.getElementById("placeImageUrl").value.trim();
+  const finalImage = currentUploadedPlaceImageBase64 || imageUrl || null;
+
+  if (editingPlaceId !== null) {
+    const place = places.find(p => p.id === editingPlaceId);
+    if (place) {
+      place.name = name;
+      place.image = finalImage;
+      place.category = document.getElementById("placeCategory").value;
+      place.type = document.getElementById("placeType").value;
+      place.location = document.getElementById("placeLocation").value.trim();
+      place.region = document.getElementById("placeRegion").value.trim();
+      place.domain = document.getElementById("placeDomain").value.trim();
+      place.governing = document.getElementById("placeGoverning").value.trim();
+      place.owner = document.getElementById("placeOwner").value.trim();
+      place.placeFunction = document.getElementById("placeFunction").value.trim();
+      place.description = document.getElementById("placeDescription").value.trim();
+      place.history = document.getElementById("placeHistory").value.trim();
+
+      showMessage(place.name + " actualizado.");
+      savePlaces();
+      openPlace(place.id);
+    }
+  } else {
+    const newPlace = {
+      id: Date.now(),
+      name,
+      image: finalImage,
+      portrait: "🏰",
+      category: document.getElementById("placeCategory").value,
+      type: document.getElementById("placeType").value,
+      location: document.getElementById("placeLocation").value.trim(),
+      region: document.getElementById("placeRegion").value.trim(),
+      domain: document.getElementById("placeDomain").value.trim(),
+      governing: document.getElementById("placeGoverning").value.trim(),
+      owner: document.getElementById("placeOwner").value.trim(),
+      placeFunction: document.getElementById("placeFunction").value.trim(),
+      description: document.getElementById("placeDescription").value.trim(),
+      history: document.getElementById("placeHistory").value.trim()
+    };
+    places.push(newPlace);
+    savePlaces();
+    showMessage(newPlace.name + " creado.");
+    openPlace(newPlace.id);
+  }
+});
+
+function deletePlace(id) {
+  const place = places.find(p => p.id === id);
+  if (!place) return;
+
+  if (confirm("¿Eliminar " + place.name + "?")) {
+    const index = places.findIndex(p => p.id === id);
+    if (index !== -1) places.splice(index, 1);
+    savePlaces();
+    showScreen(placesScreen);
+    renderPlaces();
+    showMessage(place.name + " fue eliminado.");
+  }
+}
+
+
+/* ==================================================
+   FACCIONES - RENDERING Y ACCIONES
+================================================== */
+
+function renderFactions(filter = "") {
+  factionList.innerHTML = "";
+  const searchText = filter.toLowerCase().trim();
+  const filteredFactions = factions.filter(faction =>
+    faction.name.toLowerCase().includes(searchText)
+  );
+
+  if (filteredFactions.length === 0) {
+    factionList.innerHTML = `
+      <div style="padding:35px 15px;text-align:center;color:#697580;font-family:Arial,sans-serif;font-size:13px;">
+        No se encontraron facciones.
+      </div>`;
+    return;
+  }
+
+  filteredFactions.forEach(faction => {
+    let meta = faction.type || "Facción";
+    if (faction.headquarters) meta += " · " + faction.headquarters;
+
+    const card = document.createElement("button");
+    card.className = "character-card";
+
+    const portraitHtml = faction.image
+      ? `<img src="${faction.image}" alt="${escapeHtml(faction.name)}">`
+      : (faction.portrait || "⚔️");
+
+    card.innerHTML = `
+      <div class="character-icon">${portraitHtml}</div>
+      <div>
+        <div class="character-name">${escapeHtml(faction.name)}</div>
+        <div class="character-meta">${escapeHtml(meta)}</div>
+      </div>
+    `;
+
+    card.addEventListener("click", () => openFaction(faction.id));
+    factionList.appendChild(card);
+  });
+}
+
+function openFaction(id) {
+  const faction = factions.find(f => f.id === id);
+  if (!faction) return;
+
+  currentFactionId = id;
+  factionDetailTitle.textContent = faction.name;
+
+  const portraitHtml = faction.image
+    ? `<img src="${faction.image}" alt="${escapeHtml(faction.name)}">`
+    : (faction.portrait || "⚔️");
+
+  factionSheet.innerHTML = `
+    <div class="sheet-hero">
+      <div class="sheet-identity">
+        <div class="sheet-portrait">${portraitHtml}</div>
+        <div>
+          <h1 class="sheet-name">${escapeHtml(faction.name)}</h1>
+          <p class="sheet-subtitle">${escapeHtml(faction.type || "Facción")}</p>
+          <p class="sheet-small">${escapeHtml(faction.alignment || "Alineamiento no especificado")}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet-content">
+      <section class="sheet-block">
+        <h2 class="sheet-block-title">ORGANIZACIÓN Y ALCANCE</h2>
+        <div class="sheet-block-body">
+          <div class="info-grid">
+            ${infoBox("Líder", faction.leader)}
+            ${infoBox("Sede Principal", faction.headquarters)}
+            ${infoBox("Alcance", faction.influence)}
+            ${infoBox("Aliados y Enemigos", faction.allies)}
+          </div>
+        </div>
+      </section>
+
+      <section class="sheet-block">
+        <h2 class="sheet-block-title">IDEALES Y OBJETIVOS</h2>
+        <div class="sheet-block-body sheet-text">
+          <p>${escapeHtml(faction.goals || "Sin objetivos registrados.")}</p>
+        </div>
+      </section>
+
+      <section class="sheet-block">
+        <h2 class="sheet-block-title">DESCRIPCIÓN E HISTORIA</h2>
+        <div class="sheet-block-body sheet-text">
+          <p>${escapeHtml(faction.description || "Sin descripción registrada.")}</p>
+        </div>
+      </section>
+
+      <button id="deleteFactionButton" class="delete-character-button" type="button">
+        🗑️ &nbsp; ELIMINAR FACCIÓN
+      </button>
+    </div>
+  `;
+
+  document.getElementById("deleteFactionButton").addEventListener("click", () => deleteFaction(faction.id));
+  showScreen(factionDetailScreen);
+}
+
+document.getElementById("factionImageFile").addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    currentUploadedFactionImageBase64 = event.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+function openCreateFaction() {
+  editingFactionId = null;
+  currentUploadedFactionImageBase64 = "";
+  createFactionForm.reset();
+  createFactionTitle.textContent = "NUEVA FACCIÓN";
+  saveFactionButton.innerHTML = "💾 &nbsp; GUARDAR FACCIÓN";
+  showScreen(createFactionScreen);
+}
+
+function openEditFaction(id) {
+  const faction = factions.find(f => f.id === id);
+  if (!faction) return;
+
+  editingFactionId = faction.id;
+  createFactionForm.reset();
+
+  document.getElementById("factionName").value = faction.name || "";
+  document.getElementById("factionType").value = faction.type || "Banda Mercenaria";
+  document.getElementById("factionAlignment").value = faction.alignment || "";
+  document.getElementById("factionLeader").value = faction.leader || "";
+  document.getElementById("factionHeadquarters").value = faction.headquarters || "";
+  document.getElementById("factionInfluence").value = faction.influence || "Local";
+  document.getElementById("factionAllies").value = faction.allies || "";
+  document.getElementById("factionGoals").value = faction.goals || "";
+  document.getElementById("factionDescription").value = faction.description || "";
+
+  document.getElementById("factionImageUrl").value = (faction.image && !faction.image.startsWith("data:")) ? faction.image : "";
+  currentUploadedFactionImageBase64 = (faction.image && faction.image.startsWith("data:")) ? faction.image : "";
+
+  createFactionTitle.textContent = "EDITAR FACCIÓN";
+  saveFactionButton.innerHTML = "✎ &nbsp; GUARDAR CAMBIOS";
+  showScreen(createFactionScreen);
+}
+
+createFactionForm.addEventListener("submit", function(e) {
+  e.preventDefault();
+  const name = document.getElementById("factionName").value.trim();
+  if (!name) return;
+
+  const imageUrl = document.getElementById("factionImageUrl").value.trim();
+  const finalImage = currentUploadedFactionImageBase64 || imageUrl || null;
+
+  if (editingFactionId !== null) {
+    const faction = factions.find(f => f.id === editingFactionId);
+    if (faction) {
+      faction.name = name;
+      faction.image = finalImage;
+      faction.type = document.getElementById("factionType").value;
+      faction.alignment = document.getElementById("factionAlignment").value;
+      faction.leader = document.getElementById("factionLeader").value.trim();
+      faction.headquarters = document.getElementById("factionHeadquarters").value.trim();
+      faction.influence = document.getElementById("factionInfluence").value;
+      faction.allies = document.getElementById("factionAllies").value.trim();
+      faction.goals = document.getElementById("factionGoals").value.trim();
+      faction.description = document.getElementById("factionDescription").value.trim();
+
+      showMessage(faction.name + " actualizada.");
+      saveFactions();
+      openFaction(faction.id);
+    }
+  } else {
+    const newFaction = {
+      id: Date.now(),
+      name,
+      image: finalImage,
+      portrait: "⚔️",
+      type: document.getElementById("factionType").value,
+      alignment: document.getElementById("factionAlignment").value,
+      leader: document.getElementById("factionLeader").value.trim(),
+      headquarters: document.getElementById("factionHeadquarters").value.trim(),
+      influence: document.getElementById("factionInfluence").value,
+      allies: document.getElementById("factionAllies").value.trim(),
+      goals: document.getElementById("factionGoals").value.trim(),
+      description: document.getElementById("factionDescription").value.trim()
+    };
+    factions.push(newFaction);
+    saveFactions();
+    showMessage(newFaction.name + " creada.");
+    openFaction(newFaction.id);
+  }
+});
+
+function deleteFaction(id) {
+  const faction = factions.find(f => f.id === id);
+  if (!faction) return;
+
+  if (confirm("¿Eliminar " + faction.name + "?")) {
+    const index = factions.findIndex(f => f.id === id);
+    if (index !== -1) factions.splice(index, 1);
+    saveFactions();
+    showScreen(factionsScreen);
+    renderFactions();
+    showMessage(faction.name + " fue eliminada.");
+  }
+}
+
+
+/* ==================================================
+   BUSCADOR GENERAL
+================================================== */
+
+function getCharacterSearchText(character) {
+  const parts = [];
+  function collect(value) {
+    if (value === null || value === undefined) return;
+    if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+      parts.push(String(value));
+      return;
+    }
+    if (Array.isArray(value)) {
+      value.forEach(item => collect(item));
+      return;
+    }
+    if (typeof value === "object") {
+      Object.values(value).forEach(item => collect(item));
+    }
+  }
+  collect(character);
+  return parts.join(" ").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function normalizeSearchText(value) {
+  return String(value || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+}
+
+function searchElarion(query) {
+  const normalizedQuery = normalizeSearchText(query);
+  if (!normalizedQuery) return [];
+
+  const results = [];
+
+  characters.forEach(character => {
+    const searchText = getCharacterSearchText(character);
+    if (!searchText.includes(normalizedQuery)) return;
+
+    let meta = character.type || "Personaje";
+    if (character.className) meta += " · " + character.className;
+    if (character.race) meta += " · " + character.race;
+    if (character.level !== null && character.level !== undefined) meta += " · Nivel " + character.level;
+
+    const iconHtml = character.image
+      ? `<img src="${character.image}" alt="${escapeHtml(character.name)}">`
+      : (character.portrait || "👤");
+
+    results.push({
+      kind: "character",
+      category: "PERSONAJE",
+      id: character.id,
+      name: character.name,
+      icon: iconHtml,
+      meta: meta
+    });
+  });
+
+  places.forEach(place => {
+    const searchText = (place.name + " " + place.type + " " + place.category + " " + place.location + " " + place.region + " " + place.domain + " " + place.governing + " " + place.owner + " " + place.placeFunction + " " + place.description + " " + place.history).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    if (!searchText.includes(normalizedQuery)) return;
+
+    const iconHtml = place.image
+      ? `<img src="${place.image}" alt="${escapeHtml(place.name)}">`
+      : (place.portrait || "🏰");
+
+    results.push({
+      kind: "place",
+      category: "LUGAR",
+      id: place.id,
+      name: place.name,
+      icon: iconHtml,
+      meta: (place.type || "Lugar") + (place.domain ? " · " + place.domain : "")
+    });
+  });
+
+  factions.forEach(faction => {
+    const searchText = (faction.name + " " + faction.type + " " + faction.alignment + " " + faction.leader + " " + faction.headquarters + " " + faction.influence + " " + faction.allies + " " + faction.goals + " " + faction.description).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    if (!searchText.includes(normalizedQuery)) return;
+
+    const iconHtml = faction.image
+      ? `<img src="${faction.image}" alt="${escapeHtml(faction.name)}">`
+      : (faction.portrait || "⚔️");
+
+    results.push({
+      kind: "faction",
+      category: "FACCIÓN",
+      id: faction.id,
+      name: faction.name,
+      icon: iconHtml,
+      meta: (faction.type || "Facción") + (faction.headquarters ? " · " + faction.headquarters : "")
+    });
+  });
+
+  return results;
+}
+
+function openGeneralSearch(query = "") {
+  generalSearchInput.value = query;
+  showScreen(generalSearchScreen);
+  renderGeneralSearch(query);
+}
+
+function renderGeneralSearch(query = "") {
+  const normalizedQuery = normalizeSearchText(query);
+  generalSearchResults.innerHTML = "";
+  searchResultInfo.textContent = "";
+
+  if (!normalizedQuery) {
+    searchResultInfo.textContent = "Escribí algo para buscar en el compendio de Elarion.";
+    return;
+  }
+
+  const results = searchElarion(normalizedQuery);
+
+  if (results.length === 0) {
+    searchResultInfo.textContent = "No se encontraron resultados para «" + query + "».";
+    generalSearchResults.innerHTML = `<div class="search-empty">No hay entradas que coincidan con tu búsqueda.</div>`;
+    return;
+  }
+
+  searchResultInfo.textContent = results.length === 1 ? "1 resultado encontrado." : results.length + " resultados encontrados.";
+
+  results.forEach(result => {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "search-result-card";
+
+    card.innerHTML = `
+      <div class="search-result-icon">${result.icon}</div>
+      <div>
+        <div class="search-result-type">${escapeHtml(result.category)}</div>
+        <div class="search-result-name">${escapeHtml(result.name)}</div>
+        <div class="search-result-meta">${escapeHtml(result.meta)}</div>
+      </div>
+    `;
+
+    card.addEventListener("click", () => {
+      if (result.kind === "character") openCharacter(result.id);
+      else if (result.kind === "place") openPlace(result.id);
+      else if (result.kind === "faction") openFaction(result.id);
+    });
+
+    generalSearchResults.appendChild(card);
+  });
+}
+
+
+/* ==================================================
+   ABRIR Y ELIMINAR PERSONAJE
+================================================== */
+
+function openCharacter(id) {
+  const character = characters.find(c => c.id === id);
+  if (!character) return;
+
+  currentCharacterId = id;
+  characterDetailTitle.textContent = character.name;
+  characterSheet.innerHTML = buildCharacterSheet(character);
+
+  const deleteButton = document.getElementById("deleteCharacterButton");
+  if (deleteButton) deleteButton.addEventListener("click", () => deleteCharacter(character.id));
+
+  const addRelationshipButton = document.getElementById("addRelationshipButton");
+  if (addRelationshipButton) addRelationshipButton.addEventListener("click", () => openCreateRelationship(character.id));
+
+  document.querySelectorAll(".relation-delete-button").forEach(button => {
+    button.addEventListener("click", () => deleteRelationship(Number(button.dataset.relationId), character.id));
+  });
+
+  showScreen(characterDetailScreen);
+}
+
+function deleteCharacter(id) {
+  const character = characters.find(c => c.id === id);
+  if (!character) return;
+
+  if (confirm("¿Eliminar a " + character.name + "?\n\nEsta acción no se puede deshacer.")) {
+    const index = characters.findIndex(c => c.id === id);
+    if (index !== -1) characters.splice(index, 1);
+
+    relationships = relationships.filter(r => r.characterAId !== id && r.characterBId !== id);
+
+    saveCharacters();
+    saveRelationships();
+
+    currentCharacterId = null;
+    editingCharacterId = null;
+    showScreen(charactersScreen);
+    renderCharacters();
+    showMessage(character.name + " fue eliminado.");
+  }
+}
+
+function openCreateCharacter() {
+  editingCharacterId = null;
+  currentCharacterId = null;
+  editingOriginalHistoryText = "";
+  currentUploadedImageBase64 = "";
+  createCharacterForm.reset();
+  createCharacterTitle.textContent = "NUEVO PERSONAJE";
+  saveCharacterButton.innerHTML = "💾 &nbsp; GUARDAR PERSONAJE";
+  showScreen(createCharacterScreen);
+}
+
+function openEditCharacter(id) {
+  const character = characters.find(c => c.id === id);
+  if (!character) return;
+
+  editingCharacterId = character.id;
+  const basic = character.basic || {};
+  const personality = character.personality || {};
+  const appearance = character.appearance || {};
+  const religion = character.religion || {};
+
+  createCharacterForm.reset();
+
+  document.getElementById("characterName").value = character.name || "";
+  document.getElementById("characterImageUrl").value = (character.image && !character.image.startsWith("data:")) ? character.image : "";
+  currentUploadedImageBase64 = (character.image && character.image.startsWith("data:")) ? character.image : "";
+
+  document.getElementById("characterType").value = character.type || "NPC";
+  document.getElementById("characterRace").value = character.race || "";
+  document.getElementById("characterClass").value = character.className || "";
+  document.getElementById("characterLevel").value = character.level !== null && character.level !== undefined ? character.level : "";
+  document.getElementById("characterAlignment").value = character.alignment && character.alignment !== "No especificado" ? character.alignment : "";
+  document.getElementById("characterBackground").value = character.background && character.background !== "No especificado" ? character.background : "";
+
+  document.getElementById("characterAge").value = basic.age && basic.age !== "No especificada" ? basic.age : "";
+  document.getElementById("characterHeight").value = basic.height && basic.height !== "No especificada" ? basic.height : "";
+  document.getElementById("characterBirthPlace").value = basic.birthPlace && basic.birthPlace !== "No especificado" ? basic.birthPlace : "";
+  document.getElementById("characterResidence").value = basic.residence && basic.residence !== "No especificada" ? basic.residence : "";
+  document.getElementById("characterReligion").value = basic.religion && basic.religion !== "No especificada" ? basic.religion : (religion.deity && religion.deity !== "No especificada" ? religion.deity : "");
+  document.getElementById("characterDevotion").value = basic.devotion && basic.devotion !== "No especificada" ? basic.devotion : "";
+
+  const statInputs = ["statSTR", "statDEX", "statCON", "statINT", "statWIS", "statCHA"];
+  statInputs.forEach((inputId, index) => {
+    const stat = Array.isArray(character.stats) ? character.stats[index] : null;
+    document.getElementById(inputId).value = stat && stat[1] !== undefined ? stat[1] : 10;
+  });
+
+  document.getElementById("characterAppearance").value = appearance.physical && appearance.physical !== "Todavía no registrada." ? appearance.physical : "";
+  document.getElementById("characterPersonality").value = personality.trait && personality.trait !== "Todavía no registrada." ? personality.trait : "";
+
+  if (Array.isArray(character.history) && character.history.length) {
+    editingOriginalHistoryText = character.history.map(s => s && s.text ? s.text : "").join("\n\n");
+    document.getElementById("characterHistory").value = editingOriginalHistoryText;
+  } else {
+    editingOriginalHistoryText = "";
+    document.getElementById("characterHistory").value = "";
+  }
+
+  createCharacterTitle.textContent = "EDITAR PERSONAJE";
+  saveCharacterButton.innerHTML = "✎ &nbsp; GUARDAR CAMBIOS";
+  showScreen(createCharacterScreen);
+}
+
+function calculateModifier(score) {
+  const modifier = Math.floor((score - 10) / 2);
+  return modifier >= 0 ? "+" + modifier : String(modifier).replace("-", "−");
+}
+
+document.getElementById("characterImageFile").addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    currentUploadedImageBase64 = event.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+function createCharacterFromForm() {
+  const name = document.getElementById("characterName").value.trim();
+  if (!name) {
+    showMessage("El personaje necesita un nombre.");
+    return null;
+  }
+
+  const imageUrl = document.getElementById("characterImageUrl").value.trim();
+  const finalImage = currentUploadedImageBase64 || imageUrl || null;
+
+  const type = document.getElementById("characterType").value;
+  const race = document.getElementById("characterRace").value.trim();
+  const className = document.getElementById("characterClass").value.trim();
+  const levelValue = document.getElementById("characterLevel").value;
+  const level = levelValue ? Number(levelValue) : null;
+  const alignment = document.getElementById("characterAlignment").value;
+  const background = document.getElementById("characterBackground").value.trim();
+
+  const age = document.getElementById("characterAge").value.trim();
+  const height = document.getElementById("characterHeight").value.trim();
+  const birthPlace = document.getElementById("characterBirthPlace").value.trim();
+  const residence = document.getElementById("characterResidence").value.trim();
+  const religion = document.getElementById("characterReligion").value.trim();
+  const devotion = document.getElementById("characterDevotion").value;
+
+  const scores = [
+    Number(document.getElementById("statSTR").value),
+    Number(document.getElementById("statDEX").value),
+    Number(document.getElementById("statCON").value),
+    Number(document.getElementById("statINT").value),
+    Number(document.getElementById("statWIS").value),
+    Number(document.getElementById("statCHA").value)
+  ];
+
+  const statNames = ["FUERZA", "DESTREZA", "CONSTITUCIÓN", "INTELIGENCIA", "SABIDURÍA", "CARISMA"];
+  const stats = statNames.map((stat, index) => [stat, String(scores[index]), calculateModifier(scores[index])]);
+
+  const appearance = document.getElementById("characterAppearance").value.trim();
+  const personality = document.getElementById("characterPersonality").value.trim();
+  const history = document.getElementById("characterHistory").value.trim();
+
+  if (editingCharacterId !== null) {
+    const character = characters.find(c => c.id === editingCharacterId);
+    if (!character) return null;
+
+    character.name = name;
+    character.image = finalImage;
+    character.type = type;
+    character.race = race || null;
+    character.className = className || null;
+    character.level = level;
+    character.alignment = alignment || "No especificado";
+    character.background = background || "No especificado";
+
+    character.basic = { ...character.basic, age: age || "No especificada", height: height || "No especificada", birthPlace: birthPlace || "No especificado", residence: residence || "No especificada", religion: religion || "No especificada", devotion: devotion || "No especificada" };
+    character.stats = stats;
+    character.personality = { ...character.personality, trait: personality || "Todavía no registrada." };
+    character.appearance = { ...character.appearance, physical: appearance || "Todavía no registrada." };
+
+    if (history !== editingOriginalHistoryText) {
+      character.history = [{ title: "Historia", text: history || "Todavía no registrada." }];
+    }
+
+    saveCharacters();
+    editingCharacterId = null;
+    return character;
+  }
+
+  const newCharacter = {
+    id: Date.now(),
+    name,
+    image: finalImage,
+    type,
+    race: race || null,
+    className: className || null,
+    level,
+    alignment: alignment || "No especificado",
+    background: background || "No especificado",
+    portrait: "👤",
+    basic: { age: age || "No especificada", height: height || "No especificada", birthPlace: birthPlace || "No especificado", residence: residence || "No especificada", religion: religion || "No especificada", devotion: devotion || "No especificada" },
+    stats,
+    combat: [["Clase de Armadura", "No definida"], ["Puntos de golpe", "No definidos"], ["Iniciativa", "No definida"], ["Velocidad", "No definida"], ["Dado de golpe", "No definido"], ["Bonificador de competencia", "No definido"]],
+    saves: stats.map(s => [s[0], s[2], false]),
+    skills: [],
+    attacks: [],
+    classFeatures: [],
+    feat: { title: "No definida", text: "Todavía no se ha registrado una dote." },
+    racial: { title: race || "Raza no especificada", traits: [], languages: [] },
+    proficiencies: { armor: [], weapons: [], tools: [], vehicles: [], mount: [] },
+    backgroundDetails: { title: background || "No especificado", description: "Sin detalles.", competencies: [] },
+    personality: { trait: personality || "Todavía no registrada.", ideal: "", bond: "", flaw: "", habits: "" },
+    history: [{ title: "Historia", text: history || "Todavía no registrada." }],
+    appearance: { physical: appearance || "Todavía no registrada.", distinctive: "No especificado." },
+    religion: { deity: religion || "No especificada", relation: devotion || "No especificada", description: "No registrada." }
+  };
+
+  characters.push(newCharacter);
+  saveCharacters();
+  return newCharacter;
+}
+
+createCharacterForm.addEventListener("submit", function(e) {
+  e.preventDefault();
+  const wasEditing = editingCharacterId !== null;
+  const character = createCharacterFromForm();
+  if (!character) return;
+
+  showMessage(character.name + (wasEditing ? " actualizado." : " creado."));
+  setTimeout(() => openCharacter(character.id), 500);
+});
+
+
+/* ==================================================
+   LÓGICA DE RELACIONES
+================================================== */
+
+function getCharacterById(id) {
+  return characters.find(c => c.id === id);
+}
+
+function getCharacterRelationships(characterId) {
+  return relationships.filter(r => r.characterAId === characterId || r.characterBId === characterId);
+}
+
+function getOtherCharacterId(relation, characterId) {
+  return relation.characterAId === characterId ? relation.characterBId : relation.characterAId;
+}
+
+function buildRelationshipsSection(character) {
+  const characterRelationships = getCharacterRelationships(character.id);
+
+  return `
+    <section class="sheet-block">
+      <h2 class="sheet-block-title">RELACIONES</h2>
+      <div class="sheet-block-body">
+        ${characterRelationships.length ? characterRelationships.map(relation => {
+          const otherCharacter = getCharacterById(getOtherCharacterId(relation, character.id));
+          if (!otherCharacter) return "";
+
+          const relPortraitHtml = otherCharacter.image ? `<img src="${otherCharacter.image}" alt="${escapeHtml(otherCharacter.name)}">` : (otherCharacter.portrait || "👤");
+
+          return `
+            <div class="relation-card">
+              <div class="relation-main">
+                <div class="relation-character">
+                  <div class="relation-portrait">${relPortraitHtml}</div>
+                  <div>
+                    <div class="relation-name">${escapeHtml(otherCharacter.name)}</div>
+                    <div class="relation-type">${escapeHtml(relation.type)}</div>
+                  </div>
+                </div>
+                ${relation.description ? `<div class="relation-description">${escapeHtml(relation.description)}</div>` : ""}
+              </div>
+              <button type="button" class="relation-delete-button" data-relation-id="${relation.id}">ELIMINAR</button>
+            </div>`;
+        }).join("") : `<div class="relation-empty">No hay relaciones registradas.</div>`}
+        <button type="button" class="new-character-button" id="addRelationshipButton">＋ &nbsp; AGREGAR RELACIÓN</button>
+      </div>
+    </section>`;
+}
+
+function openCreateRelationship(characterId) {
+  const character = getCharacterById(characterId);
+  if (!character) return;
+
+  const otherCharacters = characters.filter(c => c.id !== characterId);
+  if (!otherCharacters.length) {
+    showMessage("No hay otros personajes para relacionar.");
+    return;
+  }
+
+  relationshipFromCharacterId = characterId;
+  relationshipCurrentCharacter.innerHTML = infoBox("Personaje", (character.portrait || "👤") + " " + character.name);
+  relationshipCharacterSelect.innerHTML = `<option value="">Seleccionar personaje...</option>` + otherCharacters.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("");
+  relationshipType.value = "";
+  relationshipDescription.value = "";
+
+  showScreen(relationshipScreen);
+}
+
+relationshipForm.addEventListener("submit", function(e) {
+  e.preventDefault();
+  const characterAId = relationshipFromCharacterId;
+  const characterBId = Number(relationshipCharacterSelect.value);
+  const type = relationshipType.value;
+  const description = relationshipDescription.value.trim();
+
+  if (!characterAId || !characterBId || !type) return;
+
+  relationships.push({ id: Date.now(), characterAId, characterBId, type, description });
+  saveRelationships();
+  showMessage("Relación guardada.");
+  openCharacter(characterAId);
+});
+
+function deleteRelationship(relationshipId, characterId) {
+  if (confirm("¿Eliminar esta relación?")) {
+    relationships = relationships.filter(r => r.id !== relationshipId);
+    saveRelationships();
+    showMessage("Relación eliminada.");
+    openCharacter(characterId);
+  }
+}
+
+
+/* ==================================================
+   CONSTRUCCIÓN DE FICHA DE PERSONAJE
+================================================== */
+
+function buildCharacterSheet(c) {
+  const basic = c.basic || {};
+  const stats = c.stats || [];
+  const combat = c.combat || [];
+  const saves = c.saves || [];
+  const skills = c.skills || [];
+  const attacks = c.attacks || [];
+  const classFeatures = c.classFeatures || [];
+  const racial = c.racial || {};
+  const proficiencies = c.proficiencies || {};
+  const personality = c.personality || {};
+  const history = c.history || [];
+  const appearance = c.appearance || {};
+  const religion = c.religion || {};
+
+  const portraitHtml = c.image ? `<img src="${c.image}" alt="${escapeHtml(c.name)}">` : (c.portrait || "👤");
+
+  return `
+    <div class="sheet-hero">
+      <div class="sheet-identity">
+        <div class="sheet-portrait">${portraitHtml}</div>
+        <div>
+          <h1 class="sheet-name">${escapeHtml(c.name)}</h1>
+          <p class="sheet-subtitle">${escapeHtml(c.type || "Personaje")}${c.className ? " · " + escapeHtml(c.className) : ""}${c.level !== null && c.level !== undefined ? " · Nivel " + c.level : ""}</p>
+          <p class="sheet-small">${escapeHtml(c.race || "Raza no especificada")}</p>
+          <p class="sheet-small">${escapeHtml(c.alignment || "Alineamiento no especificado")}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet-content">
+      <section class="sheet-block">
+        <h2 class="sheet-block-title">INFORMACIÓN BÁSICA</h2>
+        <div class="sheet-block-body">
+          <div class="info-grid">
+            ${infoBox("Edad", basic.age)}
+            ${infoBox("Altura", basic.height)}
+            ${infoBox("Nacimiento", basic.birthPlace)}
+            ${infoBox("Residencia", basic.residence)}
+            ${infoBox("Religión", basic.religion)}
+            ${infoBox("Devoción", basic.devotion)}
+            ${infoBox("Alineamiento", c.alignment)}
+            ${infoBox("Trasfondo", c.background)}
+          </div>
+        </div>
+      </section>
+
+      <section class="sheet-block">
+        <h2 class="sheet-block-title">ATRIBUTOS</h2>
+        <div class="sheet-block-body">
+          <div class="stats-grid">
+            ${stats.map(s => `
+              <div class="stat-box">
+                <span class="stat-name">${escapeHtml(s[0])}</span>
+                <span class="stat-score">${escapeHtml(s[1])}</span>
+                <span class="stat-mod">${escapeHtml(s[2])}</span>
+              </div>`).join("")}
+          </div>
+        </div>
+      </section>
+
+      <section class="sheet-block">
+        <h2 class="sheet-block-title">COMBATE</h2>
+        <div class="sheet-block-body">${buildTable(["Dato","Valor"], combat)}</div>
+      </section>
+
+      <section class="sheet-block">
+        <h2 class="sheet-block-title">SALVACIONES</h2>
+        <div class="sheet-block-body">${saves.length ? buildTable(["Característica","Bonificador"], saves) : `<div class="sheet-text">No registradas.</div>`}</div>
+      </section>
+
+      <section class="sheet-block">
+        <h2 class="sheet-block-title">HABILIDADES</h2>
+        <div class="sheet-block-body">${skills.length ? buildTable(["Habilidad","Bonificador"], skills) : `<div class="sheet-text">No registradas.</div>`}</div>
+      </section>
+
+      <section class="sheet-block">
+        <h2 class="sheet-block-title">ATAQUES</h2>
+        <div class="sheet-block-body">${attacks.length ? buildTable(["Ataque","Bonificador","Daño","Propiedades"], attacks) : `<div class="sheet-text">No registrados.</div>`}</div>
+      </section>
+
+      ${classFeatures.length ? `
+        <section class="sheet-block">
+          <h2 class="sheet-block-title">RASGOS DE CLASE</h2>
+          <div class="sheet-block-body sheet-text">
+            ${classFeatures.map(f => `<h3>${escapeHtml(f.title)}</h3><p>${escapeHtml(f.text)}</p>`).join("")}
+          </div>
+        </section>` : ""}
+
+      ${c.feat ? `
+        <section class="sheet-block">
+          <h2 class="sheet-block-title">DOTE</h2>
+          <div class="sheet-block-body sheet-text">
+            <h3>${escapeHtml(c.feat.title)}</h3>
+            <p>${escapeHtml(c.feat.text)}</p>
+          </div>
+        </section>` : ""}
+
+      <section class="sheet-block">
+        <h2 class="sheet-block-title">RAZA</h2>
+        <div class="sheet-block-body sheet-text">
+          <h3>${escapeHtml(racial.title || c.race || "No especificada")}</h3>
+          ${racial.traits && racial.traits.length ? `<ul>${racial.traits.map(t => `<li>${escapeHtml(t)}</li>`).join("")}</ul>` : `<p>No se han registrado rasgos raciales.</p>`}
+        </div>
+      </section>
+
+      <section class="sheet-block">
+        <h2 class="sheet-block-title">PERSONALIDAD</h2>
+        <div class="sheet-block-body sheet-text">
+          <h3>Rasgo</h3>
+          <p>${escapeHtml(personality.trait || "No registrado.")}</p>
+        </div>
+      </section>
+
+      <section class="sheet-block">
+        <h2 class="sheet-block-title">APARIENCIA</h2>
+        <div class="sheet-block-body sheet-text">
+          <p>${escapeHtml(appearance.physical || "No registrada.")}</p>
+        </div>
+      </section>
+
+      <section class="sheet-block">
+        <h2 class="sheet-block-title">HISTORIA</h2>
+        <div class="sheet-block-body sheet-text">
+          ${history.length ? history.map(s => `<h3>${escapeHtml(s.title)}</h3><p>${escapeHtml(s.text)}</p>`).join("") : "<p>No registrada.</p>"}
+        </div>
+      </section>
+
+      ${buildRelationshipsSection(c)}
+
+      <button id="deleteCharacterButton" class="delete-character-button" type="button">
+        🗑️ &nbsp; ELIMINAR PERSONAJE
+      </button>
+    </div>`;
+}
+
+
+/* ==================================================
+   UTILIDADES
+================================================== */
+
+function infoBox(label, value) {
+  return `
+    <div class="info-box">
+      <span class="info-label">${escapeHtml(label)}</span>
+      <span class="info-value">${escapeHtml(value !== undefined && value !== null && value !== "" ? String(value) : "No especificado")}</span>
+    </div>`;
+}
+
+function buildTable(headers, rows) {
+  if (!rows || !rows.length) return `<div class="sheet-text">No hay información registrada.</div>`;
+  return `
+    <div class="table-container">
+      <table class="sheet-table">
+        <thead>
+          <tr>${headers.map(h => `<th>${escapeHtml(h)}</th>`).join("")}</tr>
+        </thead>
+        <tbody>
+          ${rows.map(row => `
+            <tr>
+              ${row.map((cell, index) => {
+                const isProficient = row.length >= 3 && index === 1 && row[2] === true;
+                return `<td class="${isProficient ? "proficient" : ""}">${escapeHtml(String(cell))}</td>`;
+              }).join("")}
+            </tr>`).join("")}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function listOrEmpty(list) {
+  if (!list || !list.length) return `<p>No registrado.</p>`;
+  return `<ul>${list.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
+/* ==================================================
+   NAVEGACIÓN Y EVENTOS
+================================================== */
+
+document.querySelectorAll(".menu-button").forEach(button => {
+  button.addEventListener("click", () => {
+    const name = button.dataset.name;
+    if (name === "personajes") {
+      openCharacters();
+    } else if (name === "lugares") {
+      showScreen(placesScreen);
+      renderPlaces();
+    } else if (name === "facciones") {
+      showScreen(factionsScreen);
+      renderFactions();
+    } else {
+      showMessage(name.toUpperCase() + " próximamente.");
+    }
+  });
+});
+
+document.getElementById("backFromGeneralSearch").addEventListener("click", () => {
+  generalSearchInput.value = "";
+  generalSearchResults.innerHTML = "";
+  searchResultInfo.textContent = "";
+  showScreen(homeScreen);
+});
+
+document.getElementById("backFromCharacters").addEventListener("click", () => showScreen(homeScreen));
+document.getElementById("backFromCharacter").addEventListener("click", () => showScreen(charactersScreen));
+document.getElementById("backFromCreateCharacter").addEventListener("click", () => { showScreen(charactersScreen); renderCharacters(); });
+document.getElementById("addCharacterButton").addEventListener("click", openCreateCharacter);
+document.getElementById("newCharacterButton").addEventListener("click", openCreateCharacter);
+document.getElementById("editCharacterButton").addEventListener("click", () => { if (currentCharacterId) openEditCharacter(currentCharacterId); });
+
+document.getElementById("backFromPlaces").addEventListener("click", () => showScreen(homeScreen));
+document.getElementById("backFromPlace").addEventListener("click", () => showScreen(placesScreen));
+document.getElementById("backFromCreatePlace").addEventListener("click", () => { showScreen(placesScreen); renderPlaces(); });
+document.getElementById("addPlaceButton").addEventListener("click", openCreatePlace);
+document.getElementById("newPlaceButton").addEventListener("click", openCreatePlace);
+document.getElementById("editPlaceButton").addEventListener("click", () => { if (currentPlaceId) openEditPlace(currentPlaceId); });
+
+document.getElementById("backFromFactions").addEventListener("click", () => showScreen(homeScreen));
+document.getElementById("backFromFaction").addEventListener("click", () => showScreen(factionsScreen));
+document.getElementById("backFromCreateFaction").addEventListener("click", () => { showScreen(factionsScreen); renderFactions(); });
+document.getElementById("addFactionButton").addEventListener("click", openCreateFaction);
+document.getElementById("newFactionButton").addEventListener("click", openCreateFaction);
+document.getElementById("editFactionButton").addEventListener("click", () => { if (currentFactionId) openEditFaction(currentFactionId); });
+
+document.getElementById("backFromRelationship").addEventListener("click", () => {
+  const cId = relationshipFromCharacterId;
+  relationshipFromCharacterId = null;
+  if (cId) openCharacter(cId);
+  else showScreen(charactersScreen);
+});
+
+mainSearch.addEventListener("input", e => { if (e.target.value.trim()) openGeneralSearch(e.target.value.trim()); });
+mainSearch.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.value.trim()) { e.preventDefault(); openGeneralSearch(e.target.value.trim()); } });
+generalSearchInput.addEventListener("input", e => renderGeneralSearch(e.target.value));
+characterSearch.addEventListener("input", e => renderCharacters(e.target.value));
+placeSearch.addEventListener("input", e => renderPlaces(e.target.value));
+factionSearch.addEventListener("input", e => renderFactions(e.target.value));
+
+
+/* ==================================================
+   INICIO
+================================================== */
+
+loadCharacters();
+loadPlaces();
+loadFactions();
+loadRelationships();
+renderCharacters();
+renderPlaces();
+renderFactions();
+
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
+
+<audio id="musica" loop>
+  <source src="audio/musica.mp3" type="audio/mpeg">
+</audio>
+
+<button id="btn-musica" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #d4af37;
+  background: rgba(13,10,31,0.9);
+  color: #d4af37;
+  font-size: 22px;
+  z-index: 9998;
+  cursor: pointer;
+">🎵</button>
+
+<script>
+  const audio = document.getElementById('musica');
+  const btn = document.getElementById('btn-musica');
+  let sonando = false;
+
+  btn.addEventListener('click', () => {
+    if (sonando) {
+      audio.pause();
+      btn.textContent = '🔇';
+    } else {
+      audio.play();
+      btn.textContent = '🎵';
+    }
+    sonando = !sonando;
+  });
+</script>
+
+</body>
+</html>
